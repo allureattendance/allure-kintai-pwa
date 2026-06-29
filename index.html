@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>ALLURE勤怠</title>
+
+  <!-- 見た目 -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="theme-color" content="#111111">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- =========================================
+         左側：カメラ + テンキー
+         ========================================= -->
+    <section class="left-panel">
+
+      <!-- カメラエリア -->
+      <div class="camera-area">
+        <div class="camera-title">CAMERA</div>
+
+        <video
+          id="cameraVideo"
+          class="camera-video"
+          autoplay
+          playsinline
+          muted
+        ></video>
+
+        <div class="camera-overlay">
+          <div class="face-frame">
+            <div class="face-guide-head"></div>
+            <div class="face-guide-body"></div>
+          </div>
+
+          <p class="camera-message" id="cameraMessage">
+            カメラ起動中...
+          </p>
+
+          <div id="allureFaceStatus" class="face-detect-status face-ng">
+            顔検出停止中
+          </div>
+        </div>
+      </div>
+
+      <!-- テンキー -->
+      <div class="keypad-area">
+        <div class="keypad">
+
+          <button class="keypad-button key-button" type="button" data-key="7">7</button>
+          <button class="keypad-button key-button" type="button" data-key="8">8</button>
+          <button class="keypad-button key-button" type="button" data-key="9">9</button>
+          <button class="keypad-button key-button keypad-backspace function-key" type="button" data-key="backspace">BS</button>
+
+          <button class="keypad-button key-button" type="button" data-key="4">4</button>
+          <button class="keypad-button key-button" type="button" data-key="5">5</button>
+          <button class="keypad-button key-button" type="button" data-key="6">6</button>
+          <button class="keypad-button key-button keypad-tab function-key" type="button" data-key="tab">TAB</button>
+
+          <button class="keypad-button key-button" type="button" data-key="1">1</button>
+          <button class="keypad-button key-button" type="button" data-key="2">2</button>
+          <button class="keypad-button key-button" type="button" data-key="3">3</button>
+          <button class="keypad-button key-button" type="button" data-key="0">0</button>
+
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- =========================================
+         右側：ALLURE / 時計 / 入力 / 打刻
+         ========================================= -->
+    <section class="right-panel">
+
+      <!-- 店舗名 -->
+      <header class="header header-area">
+        <div class="store-name shop-name">ALLURE</div>
+      </header>
+
+      <!-- 日付時刻 -->
+      <div class="clock-box date-time">
+        <div id="dateText" class="date-text">----/--/--</div>
+        <div id="timeText" class="time-text">--:--:--</div>
+      </div>
+
+      <!-- ID / PW -->
+      <div class="input-box info-area">
+
+        <div class="field-row input-row">
+          <label class="input-label" for="staffIdInput">ID</label>
+          <input
+            id="staffIdInput"
+            class="text-input staff-input"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            maxlength="20"
+          >
+        </div>
+
+        <div class="field-row input-row">
+          <label class="input-label" for="staffPwInput">PW</label>
+          <input
+            id="staffPwInput"
+            class="text-input staff-input"
+            type="password"
+            inputmode="numeric"
+            autocomplete="off"
+            maxlength="20"
+          >
+        </div>
+
+      </div>
+
+      <!-- 氏名 / 状態 -->
+      <div class="staff-info-area">
+
+        <div class="info-row">
+          <div class="info-label">氏名</div>
+          <div class="info-value" id="staffNameText">未確認</div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">状態</div>
+          <div class="info-value status-value" id="statusText">未確認</div>
+        </div>
+
+      </div>
+
+      <!-- 打刻ボタン -->
+      <div class="punch-buttons">
+
+        <button
+          id="btnIn"
+          class="punch-button in-button disabled"
+          type="button"
+          data-punch-type="出勤"
+        >
+          <span class="button-en">IN</span>
+          <span class="button-ja">出勤</span>
+        </button>
+
+        <button
+          id="btnOut"
+          class="punch-button out-button disabled"
+          type="button"
+          data-punch-type="退勤"
+        >
+          <span class="button-en">OUT</span>
+          <span class="button-ja">退勤</span>
+        </button>
+
+        <button
+          id="btnGoOut"
+          class="punch-button goout-button disabled"
+          type="button"
+          data-punch-type="外出"
+        >
+          <span class="button-en">GO OUT</span>
+          <span class="button-ja">外出</span>
+        </button>
+
+        <button
+          id="btnBack"
+          class="punch-button back-button disabled"
+          type="button"
+          data-punch-type="戻り"
+        >
+          <span class="button-en">BACK</span>
+          <span class="button-ja">戻り</span>
+        </button>
+
+      </div>
+
+      <!-- メッセージ -->
+      <div class="message-area">
+        <div id="mainMessage" class="message-box">
+          IDとPWを入力してください
+        </div>
+      </div>
+
+      <!-- 管理者ボタン -->
+      <div class="admin-link-area">
+        <button
+          id="btnOpenAdmin"
+          class="admin-open-button"
+          type="button"
+        >
+          管理者
+        </button>
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- =========================================
+       写真確認モーダル
+       ========================================= -->
+  <div id="photoConfirmModal" class="photo-modal hidden">
+    <div class="photo-modal-card photo-modal-box">
+
+      <div class="photo-modal-title">
+        写真確認
+      </div>
+
+      <div class="photo-preview-wrap">
+        <img id="photoPreview" class="photo-preview" alt="撮影写真">
+      </div>
+
+      <div class="photo-modal-info photo-modal-message">
+        この写真で保存しますか？
+      </div>
+
+      <div class="photo-modal-buttons">
+
+        <button
+          id="btnRetakePhoto"
+          class="photo-retake-button photo-button retake-button"
+          type="button"
+        >
+          撮り直す
+        </button>
+
+        <button
+          id="btnSavePhoto"
+          class="photo-save-button photo-button save-button"
+          type="button"
+        >
+          保存する
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- =========================================
+       JavaScript
+       app.js は通常script
+       顔検出だけ face-detector.js を module
+       ========================================= -->
+  <script src="app.js"></script>
+  <script type="module" src="face-detector.js"></script>
+
+  <script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("./service-worker.js").catch(function (error) {
+        console.log("Service Worker registration failed:", error);
+      });
+    });
+  }
+</script>
+</body>
+</html>

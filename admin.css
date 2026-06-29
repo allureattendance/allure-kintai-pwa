@@ -1,0 +1,598 @@
+/* ==================================================
+   ALLURE 管理者画面 admin.css
+   ================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+
+  width: 100%;
+  min-height: 100%;
+
+  font-family: Arial, "Yu Gothic", "Meiryo", sans-serif;
+
+  background: linear-gradient(135deg, #f4f4f4, #d9dde2);
+  color: #222;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+.admin-app {
+  width: 100vw;
+  min-height: 100vh;
+
+  padding: 18px;
+}
+
+/* ==============================
+   ヘッダー
+   ============================== */
+
+.admin-header {
+  min-height: 86px;
+
+  background: #111;
+  color: #fff;
+
+  border-radius: 18px;
+
+  padding: 16px 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+.admin-title {
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: 3px;
+}
+
+.back-button {
+  width: 190px;
+  height: 54px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #6c757d;
+  color: #fff;
+
+  font-size: 20px;
+  font-weight: 900;
+
+  cursor: pointer;
+}
+
+.back-button:active {
+  transform: translateY(2px);
+}
+
+/* ==============================
+   ログイン画面
+   ============================== */
+
+.admin-login-area {
+  margin-top: 28px;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.login-card {
+  width: min(620px, 94vw);
+
+  background: #fff;
+
+  border-radius: 22px;
+
+  padding: 28px;
+
+  border: 4px solid #c9a349;
+
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+}
+
+.login-title {
+  text-align: center;
+
+  font-size: 36px;
+  font-weight: 900;
+
+  margin-bottom: 24px;
+}
+
+.login-row {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 14px;
+  align-items: center;
+
+  margin-bottom: 18px;
+}
+
+.login-row label {
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.login-input {
+  width: 100%;
+  height: 58px;
+
+  border: 3px solid #bbb;
+  border-radius: 12px;
+
+  padding: 0 14px;
+
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: #c9a349;
+  box-shadow: 0 0 0 4px rgba(201, 163, 73, 0.22);
+}
+
+.login-button {
+  width: 100%;
+  height: 72px;
+
+  margin-top: 8px;
+
+  border: none;
+  border-radius: 16px;
+
+  background: #0d6efd;
+  color: #fff;
+
+  font-size: 30px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3);
+}
+
+.login-button:active {
+  transform: translateY(3px);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+.admin-message {
+  min-height: 52px;
+
+  margin-top: 18px;
+
+  padding: 12px 14px;
+
+  background: #111;
+  color: #fff;
+
+  border-radius: 12px;
+
+  font-size: 20px;
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+}
+
+.admin-message.error {
+  background: #b00020;
+}
+
+.admin-message.success {
+  background: #198754;
+}
+
+.admin-message.warning {
+  background: #b26a00;
+}
+
+/* ==============================
+   管理メニュー画面
+   ============================== */
+
+.admin-menu-area {
+  margin-top: 20px;
+}
+
+.admin-user-box {
+  background: #fff;
+
+  border-radius: 18px;
+
+  padding: 16px 18px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 180px;
+  gap: 14px;
+  align-items: center;
+
+  font-size: 22px;
+  font-weight: 900;
+
+  border: 2px solid #ddd;
+
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.14);
+}
+
+.logout-button {
+  height: 50px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #343a40;
+  color: #fff;
+
+  font-size: 20px;
+  font-weight: 900;
+
+  cursor: pointer;
+}
+
+.menu-grid {
+  margin-top: 20px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.menu-button {
+  min-height: 92px;
+
+  border: none;
+  border-radius: 16px;
+
+  color: #fff;
+
+  font-size: 24px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.28);
+}
+
+.menu-button:active {
+  transform: translateY(3px);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.28);
+}
+
+.menu-common {
+  background: #0d6efd;
+}
+
+.menu-main-only {
+  background: #6f42c1;
+}
+
+.menu-button.disabled-menu {
+  background: #a9a9a9 !important;
+  color: #eee !important;
+
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.admin-work-area {
+  margin-top: 20px;
+
+  min-height: 260px;
+
+  background: #fff;
+
+  border-radius: 18px;
+
+  padding: 20px;
+
+  border: 2px solid #ddd;
+
+  font-size: 22px;
+  font-weight: bold;
+
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.14);
+}
+
+/* ==============================
+   汎用
+   ============================== */
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  .admin-title {
+    font-size: 28px;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .back-button {
+    width: 100%;
+  }
+
+  .login-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-user-box {
+    grid-template-columns: 1fr;
+  }
+
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==============================
+   管理画面 共通フォーム
+   ============================== */
+
+.work-title {
+  font-size: 28px;
+  font-weight: 900;
+  margin-bottom: 18px;
+  color: #111;
+}
+
+.admin-form {
+  display: grid;
+  gap: 14px;
+  max-width: 760px;
+}
+
+.admin-form-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 14px;
+  align-items: center;
+}
+
+.admin-form-row label {
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.admin-form-input {
+  width: 100%;
+  height: 54px;
+
+  border: 3px solid #bbb;
+  border-radius: 12px;
+
+  padding: 0 14px;
+
+  font-size: 24px;
+  font-weight: bold;
+
+  background: #fff;
+}
+
+.admin-form-input:focus {
+  outline: none;
+  border-color: #c9a349;
+  box-shadow: 0 0 0 4px rgba(201, 163, 73, 0.22);
+}
+
+.admin-action-button {
+  width: 320px;
+  height: 64px;
+
+  margin-top: 8px;
+
+  border: none;
+  border-radius: 16px;
+
+  background: #198754;
+  color: #fff;
+
+  font-size: 24px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.28);
+}
+
+.admin-action-button:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.28);
+}
+
+.admin-sub-message {
+  min-height: 48px;
+
+  padding: 12px 14px;
+
+  background: #111;
+  color: #fff;
+
+  border-radius: 12px;
+
+  font-size: 20px;
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+}
+
+.admin-sub-message.error {
+  background: #b00020;
+}
+
+.admin-sub-message.success {
+  background: #198754;
+}
+
+.admin-sub-message.warning {
+  background: #b26a00;
+}
+
+@media (max-width: 900px) {
+  .admin-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-action-button {
+    width: 100%;
+  }
+}
+
+/* ==============================
+   管理画面 一覧テーブル
+   ============================== */
+
+.admin-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 14px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.admin-table th {
+  background: #222;
+  color: #ffffff;
+  padding: 12px 10px;
+  border: 1px solid #444;
+  white-space: nowrap;
+}
+
+.admin-table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.admin-table tbody tr:nth-child(even) {
+  background: #f3f5f7;
+}
+
+.status-active {
+  display: inline-block;
+  min-width: 70px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #198754;
+  color: #ffffff;
+  text-align: center;
+  font-weight: 900;
+}
+
+.status-inactive {
+  display: inline-block;
+  min-width: 70px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #6c757d;
+  color: #ffffff;
+  text-align: center;
+  font-weight: 900;
+}
+
+.small-action-button {
+  min-width: 110px;
+  height: 42px;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.small-action-button:active {
+  transform: translateY(2px);
+}
+
+.danger-button {
+  background: #dc3545;
+}
+
+.success-button {
+  background: #198754;
+}
+
+.status-warning {
+  display: inline-block;
+  min-width: 70px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #b26a00;
+  color: #ffffff;
+  text-align: center;
+  font-weight: 900;
+}
+
+.status-ended {
+  display: inline-block;
+  min-width: 70px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #343a40;
+  color: #ffffff;
+  text-align: center;
+  font-weight: 900;
+}
+
+.status-before {
+  display: inline-block;
+  min-width: 70px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #6c757d;
+  color: #ffffff;
+  text-align: center;
+  font-weight: 900;
+}
+
+.admin-readonly-box {
+  min-height: 54px;
+
+  border: 3px solid #ddd;
+  border-radius: 12px;
+
+  padding: 12px 14px;
+
+  background: #f1f3f5;
+
+  font-size: 22px;
+  font-weight: 900;
+
+  display: flex;
+  align-items: center;
+}
+
+.secondary-action-button {
+  background: #6c757d;
+}

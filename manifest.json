@@ -1,0 +1,27 @@
+{
+  "id": "./index.html",
+  "name": "ALLURE勤怠",
+  "short_name": "ALLURE勤怠",
+  "description": "ALLURE 出退勤打刻システム",
+  "start_url": "./index.html?mode=pwa",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#e9ecef",
+  "theme_color": "#111111",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

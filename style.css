@@ -1,0 +1,1114 @@
+/* ==================================================
+   ALLURE勤怠PWA style.css
+   REDMI Pad 2 9.7 コンパクト対応版
+   index.html / app.js 完全版対応
+   写真確認モーダルクリック対策込み
+   ================================================== */
+
+/* ==============================
+   基本設定
+   ============================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  font-family: Arial, "Yu Gothic", "Meiryo", sans-serif;
+
+  background: #e9ecef;
+  color: #222;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+/* ==============================
+   画面全体
+   左45% / 右55%
+   ============================== */
+
+.app {
+  width: 100vw;
+  height: 100vh;
+
+  display: grid;
+  grid-template-columns: 45% 55%;
+  gap: 14px;
+
+  padding: 14px;
+
+  background: linear-gradient(135deg, #f4f4f4, #d9dde2);
+}
+
+/* ==============================
+   左側：カメラ + テンキー
+   ============================== */
+
+.left-panel {
+  display: grid;
+  grid-template-rows: 1fr 380px;
+  gap: 14px;
+
+  min-height: 0;
+}
+
+/* ==============================
+   カメラエリア
+   ============================== */
+
+.camera-area {
+  position: relative;
+
+  background: #111;
+
+  border: 4px solid #444;
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  box-shadow:
+    inset 0 0 30px rgba(255, 255, 255, 0.08),
+    0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+.camera-title {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  z-index: 4;
+
+  color: #c9a349;
+
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.camera-video {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  transform: scaleX(-1);
+
+  background: #000;
+}
+
+.camera-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  pointer-events: none;
+}
+
+/* ==============================
+   顔ガイド
+   ============================== */
+
+.face-frame {
+  width: 58%;
+  height: 78%;
+
+  border: 4px solid rgba(255, 255, 255, 0.75);
+  border-radius: 48% 48% 28% 28%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.face-guide-head {
+  width: 200px;
+  height: 200px;
+
+  border: 4px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+
+  margin-bottom: 18px;
+}
+
+.face-guide-body {
+  width: 260px;
+  height: 130px;
+
+  border: 4px solid rgba(255, 255, 255, 0.45);
+  border-radius: 50% 50% 10% 10%;
+}
+
+.camera-message {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  min-width: 260px;
+
+  text-align: center;
+
+  color: #ffffff;
+
+  font-size: 21px;
+  font-weight: bold;
+
+  background: rgba(0, 0, 0, 0.58);
+
+  border-radius: 22px;
+
+  padding: 9px 18px;
+}
+
+.camera-message.camera-ok {
+  background: rgba(25, 135, 84, 0.88);
+}
+
+.camera-message.camera-error {
+  background: rgba(176, 0, 32, 0.88);
+}
+
+/* ==============================
+   顔検出ステータス
+   face-detector.js 用
+   ============================== */
+
+.face-detect-status {
+  position: absolute;
+  right: 18px;
+  bottom: 26px;
+  z-index: 5;
+
+  padding: 9px 16px;
+
+  border-radius: 22px;
+
+  color: #ffffff;
+
+  font-size: 18px;
+  font-weight: bold;
+
+  background: rgba(0, 0, 0, 0.62);
+
+  user-select: none;
+  pointer-events: none;
+}
+
+.face-detect-status.face-ok {
+  background: rgba(25, 135, 84, 0.9);
+}
+
+.face-detect-status.face-ng {
+  background: rgba(176, 0, 32, 0.82);
+}
+
+/* ==============================
+   テンキー
+   4列表示
+   7 8 9 BS
+   4 5 6 TAB
+   1 2 3 0
+   ============================== */
+
+.keypad-area {
+  min-height: 0;
+}
+
+.keypad {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+
+  gap: 10px;
+}
+
+.keypad-button,
+.key-button {
+  border: none;
+  border-radius: 14px;
+
+  background: #2f353a;
+  color: #fff;
+
+  font-size: 42px;
+  font-weight: bold;
+
+  box-shadow: 0 5px 0 #15181b;
+
+  cursor: pointer;
+}
+
+.keypad-button:active,
+.key-button:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #15181b;
+}
+
+.keypad-backspace,
+.keypad-tab,
+.function-key {
+  background: #6c757d;
+}
+
+/* ==============================
+   右側パネル
+   ============================== */
+
+.right-panel {
+  background: #f8f9fa;
+
+  border-radius: 22px;
+
+  padding: 18px;
+
+  display: grid;
+  grid-template-rows: auto auto auto auto 1fr auto;
+  gap: 14px;
+
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+
+  min-height: 0;
+}
+
+/* ==============================
+   ヘッダー
+   ============================== */
+
+.header,
+.header-area {
+  text-align: center;
+
+  border-bottom: 3px solid #c9a349;
+
+  padding-bottom: 10px;
+}
+
+.store-name,
+.shop-name {
+  font-size: 54px;
+  font-weight: 900;
+  letter-spacing: 6px;
+
+  color: #111;
+}
+
+/* ==============================
+   時計
+   ============================== */
+
+.clock-box,
+.date-time {
+  text-align: center;
+
+  background: #ffffff;
+
+  border-radius: 16px;
+
+  padding: 12px;
+
+  border: 2px solid #ddd;
+}
+
+.date-text,
+#dateText {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.time-text,
+#timeText {
+  font-size: 52px;
+  font-weight: 900;
+  letter-spacing: 3px;
+
+  color: #111;
+}
+
+/* ==============================
+   ID / PW
+   ============================== */
+
+.input-box,
+.info-area {
+  display: grid;
+  gap: 12px;
+}
+
+.field-row,
+.input-row {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.field-row label,
+.input-label {
+  font-size: 30px;
+  font-weight: 900;
+
+  color: #111;
+}
+
+.text-input,
+.staff-input {
+  width: 100%;
+  height: 58px;
+
+  border: 3px solid #bbb;
+  border-radius: 12px;
+
+  font-size: 32px;
+  font-weight: bold;
+
+  padding: 0 16px;
+
+  background: #fff;
+  color: #111;
+}
+
+.text-input:focus,
+.staff-input:focus,
+.active-input {
+  outline: none;
+
+  border-color: #c9a349;
+
+  box-shadow: 0 0 0 4px rgba(201, 163, 73, 0.22);
+}
+
+/* ==============================
+   氏名 / 状態
+   ============================== */
+
+.staff-info-area {
+  display: grid;
+  gap: 12px;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  align-items: center;
+  gap: 10px;
+
+  min-height: 54px;
+}
+
+.info-label {
+  font-size: 26px;
+  font-weight: 900;
+
+  color: #333;
+}
+
+.info-value {
+  min-height: 54px;
+
+  border-radius: 12px;
+
+  background: #fff;
+
+  border: 2px solid #ddd;
+
+  font-size: 28px;
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 14px;
+}
+
+.status-value {
+  color: #d00000;
+
+  font-weight: 900;
+  font-size: 34px;
+}
+
+/* ==============================
+   打刻ボタン
+   ============================== */
+
+.punch-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.punch-button {
+  min-height: 150px;
+
+  border: none;
+  border-radius: 18px;
+
+  color: #fff;
+
+  font-weight: 900;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 2px;
+
+  box-shadow: 0 7px 0 rgba(0, 0, 0, 0.35);
+
+  cursor: pointer;
+}
+
+.punch-button:active:not(.disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
+}
+
+.button-en {
+  font-size: 60px;
+  line-height: 1;
+}
+
+.button-ja {
+  font-size: 60px;
+  line-height: 1;
+}
+
+/* ==============================
+   打刻ボタン色
+   ============================== */
+
+.in-button,
+.btn-in-active,
+.punch-active-in {
+  background: #d00000 !important;
+}
+
+.out-button,
+.btn-out-active,
+.punch-active-out {
+  background: #f28c28 !important;
+}
+
+.goout-button,
+.back-button,
+.btn-goout-active,
+.btn-back-active,
+.punch-active-goout,
+.punch-active-back {
+  background: #0d6efd !important;
+}
+
+/* ==============================
+   押せないボタン
+   ============================== */
+
+.disabled,
+.punch-button:disabled {
+  background: #a9a9a9 !important;
+  color: #eeeeee !important;
+
+  box-shadow: none;
+
+  cursor: not-allowed;
+
+  opacity: 0.78;
+}
+
+/* ==============================
+   メッセージ欄
+   ============================== */
+
+.message-area {
+  min-height: 48px;
+}
+
+.message-box,
+#mainMessage {
+  min-height: 48px;
+
+  background: #111;
+  color: #fff;
+
+  border-radius: 12px;
+
+  padding: 12px 14px;
+
+  font-size: 20px;
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+}
+
+.message-box.error,
+#mainMessage.error {
+  background: #b00020;
+}
+
+.message-box.success,
+#mainMessage.success {
+  background: #198754;
+}
+
+.message-box.warning,
+#mainMessage.warning {
+  background: #b26a00;
+}
+
+/* ==============================
+   写真確認モーダル
+   ============================== */
+
+.photo-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  background: rgba(0, 0, 0, 0.72);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  pointer-events: auto;
+}
+
+.photo-modal.hidden {
+  display: none !important;
+}
+
+.photo-modal-card,
+.photo-modal-box {
+  position: relative;
+  z-index: 1001;
+
+  width: min(760px, 92vw);
+
+  background: #f8f9fa;
+
+  border-radius: 24px;
+
+  padding: 22px;
+
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+
+  border: 4px solid #c9a349;
+
+  pointer-events: auto;
+}
+
+.photo-modal-title {
+  text-align: center;
+
+  font-size: 34px;
+  font-weight: 900;
+
+  color: #111;
+
+  margin-bottom: 14px;
+}
+
+.photo-preview-wrap {
+  width: 100%;
+
+  background: #111;
+
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  pointer-events: auto;
+}
+
+.photo-preview {
+  width: 100%;
+  max-height: 52vh;
+
+  object-fit: contain;
+
+  display: block;
+
+  pointer-events: none;
+}
+
+.photo-modal-info,
+.photo-modal-message {
+  margin-top: 14px;
+
+  text-align: center;
+
+  font-size: 24px;
+  font-weight: bold;
+
+  color: #222;
+}
+
+.photo-modal-buttons {
+  position: relative;
+  z-index: 1002;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  margin-top: 18px;
+
+  pointer-events: auto;
+}
+
+.photo-save-button,
+.photo-retake-button,
+.photo-button {
+  position: relative;
+  z-index: 1003;
+
+  height: 86px;
+
+  border: none;
+  border-radius: 18px;
+
+  color: #fff;
+
+  font-size: 34px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  pointer-events: auto;
+}
+
+.photo-save-button,
+.save-button {
+  background: #198754;
+}
+
+.photo-retake-button,
+.retake-button {
+  background: #6c757d;
+}
+
+.photo-save-button:disabled,
+.photo-retake-button:disabled,
+.photo-button:disabled {
+  background: #a9a9a9;
+
+  cursor: not-allowed;
+}
+
+/* ==============================
+   汎用
+   ============================== */
+
+.hidden {
+  display: none !important;
+}
+
+/* ==============================
+   画面幅が小さい場合
+   ============================== */
+
+@media (max-width: 900px) {
+  .store-name,
+  .shop-name {
+    font-size: 42px;
+  }
+
+  .time-text,
+  #timeText {
+    font-size: 42px;
+  }
+
+  .button-en {
+    font-size: 48px;
+  }
+
+  .button-ja {
+    font-size: 48px;
+  }
+}
+
+/* ==============================
+   REDMI Pad 2 9.7 / Androidタブレット横向き用
+   ブラウザバーが出ている開発確認時でも画面内に収まりやすくする
+   ============================== */
+
+@media (orientation: landscape) and (max-width: 1280px),
+       (orientation: landscape) and (max-height: 760px) {
+  .app {
+    grid-template-columns: 43% 57%;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .left-panel {
+    grid-template-rows: minmax(0, 1fr) 255px;
+    gap: 8px;
+  }
+
+  .camera-area {
+    border-width: 3px;
+    border-radius: 12px;
+  }
+
+  .camera-title {
+    top: 8px;
+    left: 10px;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+  }
+
+  .face-frame {
+    width: 52%;
+    height: 72%;
+    border-width: 3px;
+  }
+
+  .face-guide-head {
+    width: 120px;
+    height: 120px;
+    border-width: 3px;
+    margin-bottom: 8px;
+  }
+
+  .face-guide-body {
+    width: 170px;
+    height: 78px;
+    border-width: 3px;
+  }
+
+  .camera-message {
+    bottom: 12px;
+    min-width: 190px;
+    font-size: 14px;
+    border-radius: 16px;
+    padding: 6px 12px;
+  }
+
+  .face-detect-status {
+    right: 10px;
+    bottom: 12px;
+    padding: 6px 10px;
+    font-size: 13px;
+    border-radius: 16px;
+  }
+
+  .keypad {
+    gap: 6px;
+  }
+
+  .keypad-button,
+  .key-button {
+    border-radius: 9px;
+    font-size: 28px;
+    box-shadow: 0 3px 0 #15181b;
+  }
+
+  .right-panel {
+    border-radius: 14px;
+    padding: 10px;
+    gap: 7px;
+    grid-template-rows: auto auto auto auto 1fr auto;
+  }
+
+  .header,
+  .header-area {
+    border-bottom-width: 2px;
+    padding-bottom: 5px;
+  }
+
+  .store-name,
+  .shop-name {
+    font-size: 32px;
+    letter-spacing: 5px;
+  }
+
+  .clock-box,
+  .date-time {
+    border-radius: 10px;
+    padding: 6px;
+    border-width: 1px;
+  }
+
+  .date-text,
+  #dateText {
+    font-size: 14px;
+  }
+
+  .time-text,
+  #timeText {
+    font-size: 30px;
+    letter-spacing: 2px;
+  }
+
+  .input-box,
+  .info-area,
+  .staff-info-area {
+    gap: 5px;
+  }
+
+  .field-row,
+  .input-row {
+    grid-template-columns: 42px 1fr;
+    gap: 6px;
+  }
+
+  .field-row label,
+  .input-label {
+    font-size: 19px;
+  }
+
+  .text-input,
+  .staff-input {
+    height: 36px;
+    border-width: 2px;
+    border-radius: 8px;
+    font-size: 19px;
+    padding: 0 10px;
+  }
+
+  .text-input:focus,
+  .staff-input:focus,
+  .active-input {
+    box-shadow: 0 0 0 2px rgba(201, 163, 73, 0.22);
+  }
+
+  .info-row {
+    grid-template-columns: 54px 1fr;
+    gap: 6px;
+    min-height: 34px;
+  }
+
+  .info-label {
+    font-size: 17px;
+  }
+
+  .info-value {
+    min-height: 34px;
+    border-radius: 8px;
+    border-width: 1px;
+    font-size: 17px;
+    padding: 0 9px;
+  }
+
+  .status-value {
+    font-size: 22px;
+  }
+
+  .punch-buttons {
+    gap: 8px;
+  }
+
+  .punch-button {
+    min-height: 86px;
+    border-radius: 10px;
+    gap: 0;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35);
+  }
+
+  .button-en {
+    font-size: 33px;
+  }
+
+  .button-ja {
+    font-size: 33px;
+  }
+
+  .message-area {
+    min-height: 32px;
+  }
+
+  .message-box,
+  #mainMessage {
+    min-height: 32px;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+
+  .admin-open-button {
+    width: 100px;
+    height: 34px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
+  }
+
+  .photo-modal-card,
+  .photo-modal-box {
+    width: min(620px, 90vw);
+    border-radius: 18px;
+    padding: 14px;
+    border-width: 3px;
+  }
+
+  .photo-modal-title {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .photo-preview {
+    max-height: 48vh;
+  }
+
+  .photo-modal-info,
+  .photo-modal-message {
+    margin-top: 8px;
+    font-size: 17px;
+  }
+
+  .photo-modal-buttons {
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .photo-save-button,
+  .photo-retake-button,
+  .photo-button {
+    height: 56px;
+    border-radius: 12px;
+    font-size: 24px;
+  }
+}
+
+/* ==============================
+   さらに高さが低い場合の微調整
+   ============================== */
+
+@media (orientation: landscape) and (max-height: 650px) {
+  .app {
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .left-panel {
+    grid-template-rows: minmax(0, 1fr) 235px;
+    gap: 6px;
+  }
+
+  .right-panel {
+    padding: 8px;
+    gap: 5px;
+  }
+
+  .store-name,
+  .shop-name {
+    font-size: 29px;
+  }
+
+  .time-text,
+  #timeText {
+    font-size: 27px;
+  }
+
+  .text-input,
+  .staff-input {
+    height: 32px;
+    font-size: 17px;
+  }
+
+  .info-row,
+  .info-value {
+    min-height: 31px;
+  }
+
+  .info-value {
+    font-size: 16px;
+  }
+
+  .status-value {
+    font-size: 20px;
+  }
+
+  .punch-button {
+    min-height: 78px;
+  }
+
+  .button-en,
+  .button-ja {
+    font-size: 30px;
+  }
+
+  .message-box,
+  #mainMessage {
+    min-height: 29px;
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+
+  .admin-open-button {
+    height: 30px;
+    font-size: 13px;
+  }
+}
+
+/* ==============================
+   管理者ボタン
+   ============================== */
+
+.admin-link-area {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.admin-open-button {
+  width: 150px;
+  height: 48px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #343a40;
+  color: #ffffff;
+
+  font-size: 20px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35);
+}
+
+.admin-open-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+@media (orientation: landscape) and (max-width: 1280px),
+       (orientation: landscape) and (max-height: 760px) {
+  .admin-open-button {
+    width: 100px;
+    height: 34px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
+  }
+}

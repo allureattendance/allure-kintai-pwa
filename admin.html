@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>ALLURE 管理者</title>
+
+  <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+  <div class="admin-app">
+
+    <!-- ヘッダー -->
+    <header class="admin-header">
+      <div class="admin-title">ALLURE 管理者</div>
+      <button id="btnBackToPunch" class="back-button" type="button">
+        打刻画面へ戻る
+      </button>
+    </header>
+
+    <!-- ログイン画面 -->
+    <main id="adminLoginArea" class="admin-login-area">
+
+      <div class="login-card">
+        <div class="login-title">管理者ログイン</div>
+
+        <div class="login-row">
+          <label for="adminIdInput">管理者ID</label>
+          <input
+            id="adminIdInput"
+            class="login-input"
+            type="text"
+            autocomplete="off"
+            inputmode="text"
+          >
+        </div>
+
+        <div class="login-row">
+          <label for="adminPwInput">暗証番号</label>
+          <input
+            id="adminPwInput"
+            class="login-input"
+            type="password"
+            autocomplete="off"
+            inputmode="numeric"
+          >
+        </div>
+
+        <button id="btnAdminLogin" class="login-button" type="button">
+          ログイン
+        </button>
+
+        <div id="adminLoginMessage" class="admin-message">
+          管理者IDと暗証番号を入力してください
+        </div>
+      </div>
+
+    </main>
+
+    <!-- 管理メニュー画面 -->
+    <main id="adminMenuArea" class="admin-menu-area hidden">
+
+      <div class="admin-user-box">
+        <div>
+          ログイン中：
+          <span id="loginAdminName">未ログイン</span>
+        </div>
+        <div>
+          権限：
+          <span id="loginAdminRole">未確認</span>
+        </div>
+        <button id="btnAdminLogout" class="logout-button" type="button">
+          ログアウト
+        </button>
+      </div>
+
+      <div class="menu-grid">
+
+        <!-- main / admin 共通 -->
+        <button class="menu-button menu-common" type="button" data-menu="punchSearch">
+          打刻Data検索・修正
+        </button>
+
+        <button class="menu-button menu-common" type="button" data-menu="editHistory">
+          修正履歴確認
+        </button>
+
+        <button class="menu-button menu-common" type="button" data-menu="staffAdd">
+          スタッフ追加
+        </button>
+
+        <button class="menu-button menu-common" type="button" data-menu="staffStatus">
+          スタッフ有効 / 無効切替
+        </button>
+
+        <button class="menu-button menu-common" type="button" data-menu="staffHistory">
+          スタッフ変更履歴確認
+        </button>
+
+        <button class="menu-button menu-common" type="button" data-menu="staffPunchStatus">
+          スタッフ打刻状況確認
+        </button>
+
+        <!-- main 専用 -->
+        <button class="menu-button menu-main-only" type="button" data-menu="adminAdd">
+          管理者追加
+        </button>
+
+        <button class="menu-button menu-main-only" type="button" data-menu="adminStatus">
+          管理者有効 / 無効切替
+        </button>
+
+        <button class="menu-button menu-main-only" type="button" data-menu="adminRole">
+          管理者権限変更
+        </button>
+
+        <button class="menu-button menu-main-only" type="button" data-menu="errorLog">
+          エラーログ確認
+        </button>
+
+        <button class="menu-button menu-main-only" type="button" data-menu="settings">
+          設定確認 / 変更
+        </button>
+
+      </div>
+
+      <section id="adminWorkArea" class="admin-work-area">
+        メニューを選択してください。
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
