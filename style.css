@@ -1192,3 +1192,23 @@ input {
   transform: translateY(2px);
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
 }
+
+/* ==============================
+   PWA / Android 画面復帰時の高さズレ対策
+   ============================== */
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+body {
+  height: var(--app-height, 100vh);
+}
+
+.app {
+  height: var(--app-height, 100vh);
+  max-height: var(--app-height, 100vh);
+}
