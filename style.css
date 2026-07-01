@@ -1112,3 +1112,83 @@ input {
     box-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
   }
 }
+
+/* ==============================
+   右下操作ボタンエリア
+   Reload / 将来用空白ボタン / 管理者
+   ============================== */
+
+.bottom-control-area {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.bottom-left-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bottom-right-buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.utility-button {
+  width: 110px;
+  height: 48px;
+
+  border: none;
+  border-radius: 12px;
+
+  color: #ffffff;
+
+  font-size: 20px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35);
+}
+
+.utility-button:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.reload-button {
+  background: #0d6efd;
+}
+
+.blank-utility-button {
+  background: #adb5bd;
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.admin-open-button {
+  width: 150px;
+  height: 48px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #343a40;
+  color: #ffffff;
+
+  font-size: 20px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35);
+}
+
+.admin-open-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+}
