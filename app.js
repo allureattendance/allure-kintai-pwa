@@ -77,6 +77,7 @@ window.addEventListener("DOMContentLoaded", async function () {
   setupPunchButtons();
   setupPhotoModal();
   setupAdminButton();
+  setupReloadButton();
 
   applyClientSettingsToScreen();
 
@@ -605,6 +606,31 @@ function setupAdminButton() {
   });
 }
 
+/* ==================================================
+   Reloadボタン
+   カメラ停止・顔検出停止・通信不安定時の復旧用
+   ================================================== */
+
+function setupReloadButton() {
+  const btnReloadApp = document.getElementById("btnReloadApp");
+
+  if (!btnReloadApp) return;
+
+  btnReloadApp.addEventListener("click", function () {
+    const ok = window.confirm(
+      "勤怠画面をReloadします。\n\n" +
+      "入力中のID/PWは消えます。\n" +
+      "よろしいですか？"
+    );
+
+    if (!ok) return;
+
+    const baseUrl = window.location.origin + window.location.pathname;
+    const reloadUrl = baseUrl + "?reload=" + Date.now();
+
+    window.location.replace(reloadUrl);
+  });
+}
 
 /* ==================================================
    写真確認モーダル
