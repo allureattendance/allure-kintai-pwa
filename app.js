@@ -78,6 +78,7 @@ window.addEventListener("DOMContentLoaded", async function () {
   setupPhotoModal();
   setupAdminButton();
   setupReloadButton();
+  setupResumeReload();
 
   applyClientSettingsToScreen();
 
@@ -234,6 +235,11 @@ function setupInputs() {
 }
 
 function setActiveInput(inputElement) {
+  if (!inputElement) return;
+
+  // すでに同じ入力欄なら何もしない
+  if (currentInputTarget === inputElement) return;
+
   const staffIdInput = document.getElementById("staffIdInput");
   const staffPwInput = document.getElementById("staffPwInput");
 
@@ -247,10 +253,9 @@ function setActiveInput(inputElement) {
 
   currentInputTarget = inputElement;
 
-  if (inputElement) {
-    inputElement.focus();
-    inputElement.classList.add("active-input");
-  }
+  inputElement.classList.add("active-input");
+
+  // Androidキーボードを出さないため、ここでは focus() しない
 }
 
 
@@ -630,6 +635,61 @@ function setupReloadButton() {
 
     window.location.replace(reloadUrl);
   });
+}
+
+/* ==================================================
+   スリープ復帰 / 画面再表示時の自動Reload
+   Androidでカメラが止まったままになる対策
+   ================================================== */
+
+function setupResumeReload() {
+  let hiddenAt = 0;
+  let isResumeReloading = false;
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) {
+      hiddenAt = Date.now();
+      return;
+    }
+
+    const hiddenTime = hiddenAt ? Date.now() - hiddenAt : 0;
+
+    // 3秒以上画面が非表示だった場合だけReload
+    if (hiddenTime >= 3000) {
+      reloadAfterResume();
+    }
+  });
+
+  window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+      reloadAfterResume();
+    }
+  });
+
+  window.addEventListener("focus", function () {
+    if (!hiddenAt) return;
+
+    const hiddenTime = Date.now() - hiddenAt;
+
+    if (hiddenTime >= 3000) {
+      reloadAfterResume();
+    }
+  });
+
+  function reloadAfterResume() {
+    if (isResumeReloading) return;
+
+    isResumeReloading = true;
+
+    showMainMessage("画面復帰を検知しました。カメラを再起動します...", "warning");
+
+    setTimeout(function () {
+      const baseUrl = window.location.origin + window.location.pathname;
+      const reloadUrl = baseUrl + "?resumeReload=" + Date.now();
+
+      window.location.replace(reloadUrl);
+    }, 800);
+  }
 }
 
 /* ==================================================
