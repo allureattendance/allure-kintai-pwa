@@ -643,53 +643,71 @@ function setupReloadButton() {
    ================================================== */
 
 function setupResumeReload() {
-  let hiddenAt = 0;
+  let inactiveAt = 0;
   let isResumeReloading = false;
 
-  document.addEventListener("visibilitychange", function () {
-    if (document.hidden) {
-      hiddenAt = Date.now();
-      return;
-    }
+  function markInactive() {
+    inactiveAt = Date.now();
+  }
 
-    const hiddenTime = hiddenAt ? Date.now() - hiddenAt : 0;
-
-    // 3秒以上画面が非表示だった場合だけReload
-    if (hiddenTime >= 3000) {
-      reloadAfterResume();
-    }
-  });
-
-  window.addEventListener("pageshow", function (event) {
-    if (event.persisted) {
-      reloadAfterResume();
-    }
-  });
-
-  window.addEventListener("focus", function () {
-    if (!hiddenAt) return;
-
-    const hiddenTime = Date.now() - hiddenAt;
-
-    if (hiddenTime >= 3000) {
-      reloadAfterResume();
-    }
-  });
-
-  function reloadAfterResume() {
+  function checkResume(reason) {
+    if (!inactiveAt) return;
     if (isResumeReloading) return;
+
+    const inactiveTime = Date.now() - inactiveAt;
+
+    // 2秒以上、画面OFF・裏移動・フォーカス外れがあった場合だけReload
+    if (inactiveTime < 2000) return;
 
     isResumeReloading = true;
 
-    showMainMessage("画面復帰を検知しました。カメラを再起動します...", "warning");
+    showMainMessage(
+      "画面復帰を検知しました。カメラを再起動します...",
+      "warning"
+    );
 
     setTimeout(function () {
       const baseUrl = window.location.origin + window.location.pathname;
-      const reloadUrl = baseUrl + "?resumeReload=" + Date.now();
+      const reloadUrl =
+        baseUrl +
+        "?resumeReload=" +
+        Date.now() +
+        "&reason=" +
+        encodeURIComponent(reason || "resume");
 
       window.location.replace(reloadUrl);
     }, 800);
   }
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) {
+      markInactive();
+      return;
+    }
+
+    checkResume("visibilitychange");
+  });
+
+  window.addEventListener("pagehide", function () {
+    markInactive();
+  });
+
+  window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+      checkResume("pageshow-persisted");
+      return;
+    }
+
+    checkResume("pageshow");
+  });
+
+  window.addEventListener("blur", function () {
+    markInactive();
+  });
+
+  window.addEventListener("focus", function () {
+    checkResume("focus");
+  });
 }
 
 /* ==================================================
