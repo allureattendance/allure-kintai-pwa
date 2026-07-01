@@ -79,6 +79,7 @@ window.addEventListener("DOMContentLoaded", async function () {
   setupAdminButton();
   setupReloadButton();
   setupResumeReload();
+  setupViewportFix();
 
   applyClientSettingsToScreen();
 
@@ -707,6 +708,61 @@ function setupResumeReload() {
 
   window.addEventListener("focus", function () {
     checkResume("focus");
+  });
+}
+
+/* ==================================================
+   Android / PWA 画面高さズレ対策
+   復帰後に下が切れる問題を補正する
+   ================================================== */
+
+function setupViewportFix() {
+  function updateAppHeight() {
+    const height = window.innerHeight;
+
+    document.documentElement.style.setProperty(
+      "--app-height",
+      height + "px"
+    );
+
+    document.body.style.height = height + "px";
+
+    // 復帰直後にズレたスクロール位置を戻す
+    window.scrollTo(0, 0);
+  }
+
+  // 起動直後
+  updateAppHeight();
+
+  // 少し遅れて再計算
+  setTimeout(updateAppHeight, 300);
+  setTimeout(updateAppHeight, 1000);
+
+  // 画面サイズ変更時
+  window.addEventListener("resize", function () {
+    updateAppHeight();
+    setTimeout(updateAppHeight, 300);
+  });
+
+  // 画面向き変更時
+  window.addEventListener("orientationchange", function () {
+    setTimeout(updateAppHeight, 300);
+    setTimeout(updateAppHeight, 1000);
+  });
+
+  // スリープ復帰・アプリ復帰時
+  window.addEventListener("focus", function () {
+    updateAppHeight();
+    setTimeout(updateAppHeight, 300);
+    setTimeout(updateAppHeight, 1000);
+  });
+
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) {
+      updateAppHeight();
+      setTimeout(updateAppHeight, 300);
+      setTimeout(updateAppHeight, 1000);
+    }
   });
 }
 
