@@ -77,6 +77,7 @@ window.addEventListener("DOMContentLoaded", async function () {
   setupKeypad();
   setupPunchButtons();
   setupPhotoModal();
+  setupForgotClockOutModal();
   setupAdminButton();
   setupReloadButton();
   setupResumeReload();
@@ -463,6 +464,7 @@ async function checkStaffStatus() {
       setStatusText("未確認");
 
       updatePunchButtons();
+      hideForgotClockOutModal();
 
       showMainMessage(data.message || "IDまたはPWが違います", "error");
       return;
@@ -483,6 +485,15 @@ async function checkStaffStatus() {
     setStatusText(currentStatus || "未確認");
 
     updatePunchButtons();
+
+    if (data.forgotClockOut === true) {
+      showForgotClockOutModal(
+        data.forgotClockOutMessageJa,
+        data.forgotClockOutMessageEn
+      );
+    } else {
+      hideForgotClockOutModal();
+    }
 
     if (currentFaceDetected) {
       showMainMessage("確認完了。打刻できます。", "success");
@@ -937,6 +948,7 @@ async function savePunch() {
     }
 
     hidePhotoConfirm();
+    hideForgotClockOutModal();
 
     showMainMessage("保存しました", "success");
 
@@ -1200,6 +1212,8 @@ function showMainMessage(message, type) {
    ================================================== */
 
 function clearStaffResultOnly() {
+  hideForgotClockOutModal();
+
   currentStaffId = "";
   currentStaffPw = "";
   currentStaffName = "";
@@ -1214,6 +1228,8 @@ function clearStaffResultOnly() {
 }
 
 function resetAfterSave() {
+  hideForgotClockOutModal();
+
   const staffIdInput = document.getElementById("staffIdInput");
   const staffPwInput = document.getElementById("staffPwInput");
 
@@ -1241,6 +1257,8 @@ function resetAfterSave() {
 }
 
 function resetScreen() {
+  hideForgotClockOutModal();
+
   const staffIdInput = document.getElementById("staffIdInput");
   const staffPwInput = document.getElementById("staffPwInput");
 
@@ -1262,6 +1280,57 @@ function resetScreen() {
   showMainMessage("IDとPWを入力してください", "");
 
   updatePunchButtons();
+}
+
+
+/* ==================================================
+   退勤打刻忘れ 警告モーダル
+   ================================================== */
+
+function setupForgotClockOutModal() {
+  const okButton = document.getElementById("forgotClockOutOkButton");
+
+  if (!okButton) {
+    return;
+  }
+
+  okButton.addEventListener("click", function () {
+    hideForgotClockOutModal();
+  });
+}
+
+function showForgotClockOutModal(messageJa, messageEn) {
+  const modal = document.getElementById("forgotClockOutModal");
+  const jaEl = document.querySelector(".forgot-clockout-message-ja");
+  const enEl = document.querySelector(".forgot-clockout-message-en");
+
+  if (!modal) {
+    return;
+  }
+
+  if (jaEl) {
+    jaEl.textContent =
+      messageJa || "管理者に報告して修正依頼してください。";
+  }
+
+  if (enEl) {
+    enEl.innerHTML =
+      messageEn
+        ? String(messageEn).replace(/\n/g, "<br>")
+        : "Warning! You forgot to clock out.<br>Please notify your manager and request a correction.";
+  }
+
+  modal.classList.remove("hidden");
+}
+
+function hideForgotClockOutModal() {
+  const modal = document.getElementById("forgotClockOutModal");
+
+  if (!modal) {
+    return;
+  }
+
+  modal.classList.add("hidden");
 }
 
 
@@ -1328,3 +1397,5 @@ window.showMainMessage = showMainMessage;
 window.savePunch = savePunch;
 window.hidePhotoConfirm = hidePhotoConfirm;
 window.sendErrorLog = sendErrorLog;
+window.showForgotClockOutModal = showForgotClockOutModal;
+window.hideForgotClockOutModal = hideForgotClockOutModal;
