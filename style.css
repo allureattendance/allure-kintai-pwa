@@ -1310,3 +1310,191 @@ body {
   border-color: transparent !important;
   box-shadow: none !important;
 }
+
+/* ==================================================
+   退勤打刻忘れ 警告モーダル
+   既存レイアウトは動かさず、画面中央に重ねて表示
+   ================================================== */
+
+.forgot-clockout-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  pointer-events: auto;
+}
+
+.forgot-clockout-modal.hidden {
+  display: none !important;
+}
+
+.forgot-clockout-box {
+  width: min(86vw, 760px);
+
+  padding: 36px 42px;
+
+  border: 8px solid #ff0000;
+  border-radius: 28px;
+
+  background: #ffffff;
+
+  text-align: center;
+
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+
+  animation: forgotClockOutFlash 0.85s infinite;
+
+  pointer-events: auto;
+}
+
+.forgot-clockout-title {
+  color: #ff0000;
+
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1.2;
+
+  margin-bottom: 24px;
+}
+
+.forgot-clockout-message-ja {
+  color: #111111;
+
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.35;
+
+  margin-bottom: 22px;
+}
+
+.forgot-clockout-message-en {
+  color: #ff0000;
+
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.35;
+
+  margin-bottom: 30px;
+}
+
+.forgot-clockout-ok-button {
+  width: 240px;
+  height: 82px;
+
+  border: none;
+  border-radius: 18px;
+
+  background: #222222;
+  color: #ffffff;
+
+  font-size: 42px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  pointer-events: auto;
+}
+
+.forgot-clockout-ok-button:active {
+  transform: scale(0.96);
+}
+
+@keyframes forgotClockOutFlash {
+  0% {
+    border-color: #ff0000;
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.8);
+  }
+
+  50% {
+    border-color: #ffffff;
+    box-shadow: 0 0 36px 12px rgba(255, 0, 0, 0.75);
+  }
+
+  100% {
+    border-color: #ff0000;
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.8);
+  }
+}
+
+/* ==============================
+   退勤忘れ警告モーダル
+   Androidタブレット横向き用
+   ============================== */
+
+@media (orientation: landscape) and (max-width: 1280px),
+       (orientation: landscape) and (max-height: 760px) {
+  .forgot-clockout-box {
+    width: min(82vw, 620px);
+
+    padding: 24px 30px;
+
+    border-width: 6px;
+    border-radius: 22px;
+  }
+
+  .forgot-clockout-title {
+    font-size: 36px;
+    margin-bottom: 16px;
+  }
+
+  .forgot-clockout-message-ja {
+    font-size: 25px;
+    margin-bottom: 14px;
+  }
+
+  .forgot-clockout-message-en {
+    font-size: 21px;
+    margin-bottom: 20px;
+  }
+
+  .forgot-clockout-ok-button {
+    width: 190px;
+    height: 62px;
+
+    border-radius: 14px;
+
+    font-size: 32px;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 650px) {
+  .forgot-clockout-box {
+    width: min(80vw, 560px);
+
+    padding: 18px 24px;
+
+    border-width: 5px;
+    border-radius: 18px;
+  }
+
+  .forgot-clockout-title {
+    font-size: 31px;
+    margin-bottom: 12px;
+  }
+
+  .forgot-clockout-message-ja {
+    font-size: 21px;
+    margin-bottom: 10px;
+  }
+
+  .forgot-clockout-message-en {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .forgot-clockout-ok-button {
+    width: 160px;
+    height: 54px;
+
+    border-radius: 12px;
+
+    font-size: 28px;
+  }
+}
+
