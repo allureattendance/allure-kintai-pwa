@@ -18,7 +18,7 @@
   <meta name="theme-color" content="#111111">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 
 <body>
@@ -92,7 +92,7 @@
         <div class="store-title-row">
           <div id="storeNameText" class="store-name shop-name">ALLURE</div>
           <div id="appVersionText" class="app-version-text">Ver. 2026.07.02-01</div>
-       </div>
+        </div>
       </header>
 
       <!-- 日付時刻 -->
@@ -104,18 +104,18 @@
       <!-- ID / PW -->
       <div class="input-box info-area id-pw-area">
 
-       <div class="field-row input-row id-pw-row">
-         <label class="input-label id-pw-label" for="staffIdInput">ID</label>
-         <input
-           id="staffIdInput"
-           class="text-input staff-input id-pw-input"
-           type="text"
-           inputmode="none"
-           readonly
-           tabindex="-1"
-           autocomplete="off"
-           maxlength="20"
-           onfocus="this.blur();"
+        <div class="field-row input-row id-pw-row">
+          <label class="input-label id-pw-label" for="staffIdInput">ID</label>
+          <input
+            id="staffIdInput"
+            class="text-input staff-input id-pw-input"
+            type="text"
+            inputmode="none"
+            readonly
+            tabindex="-1"
+            autocomplete="off"
+            maxlength="20"
+            onfocus="this.blur();"
           >
         </div>
 
@@ -205,26 +205,24 @@
 
       <!-- 右下操作ボタン -->
       <div class="bottom-control-area">
-       <div class="bottom-left-buttons">
-         <button id="btnReloadApp" class="utility-button reload-button" type="button">
-           Reload
-         </button>
+        <div class="bottom-left-buttons">
+          <button id="btnReloadApp" class="utility-button reload-button" type="button">
+            Reload
+          </button>
 
-         <button class="utility-button blank-utility-button" type="button" disabled>
-      
-         </button>
+          <button class="utility-button blank-utility-button" type="button" disabled>
+          </button>
 
-         <button class="utility-button blank-utility-button" type="button" disabled>
-      
-         </button>
+          <button class="utility-button blank-utility-button" type="button" disabled>
+          </button>
+        </div>
+
+        <div class="bottom-right-buttons">
+          <button id="btnOpenAdmin" class="admin-open-button" type="button">
+            管理者
+          </button>
+        </div>
       </div>
-
-      <div class="bottom-right-buttons">
-        <button id="btnOpenAdmin" class="admin-open-button" type="button">
-          管理者
-        </button>
-      </div>
-    </div>
 
     </section>
 
@@ -274,6 +272,39 @@
 
 
   <!-- =========================================
+       退勤打刻忘れ 警告モーダル
+       既存画面の上に重ねて表示するため、
+       ボタン位置や画面配置は変更しない
+       ========================================= -->
+  <div id="forgotClockOutModal" class="forgot-clockout-modal hidden">
+    <div class="forgot-clockout-box">
+
+      <div class="forgot-clockout-title">
+        注意！退勤打刻忘れ！
+      </div>
+
+      <div class="forgot-clockout-message-ja">
+        管理者に報告して修正依頼してください。
+      </div>
+
+      <div class="forgot-clockout-message-en">
+        Warning! You forgot to clock out.<br>
+        Please notify your manager and request a correction.
+      </div>
+
+      <button
+        id="forgotClockOutOkButton"
+        class="forgot-clockout-ok-button"
+        type="button"
+      >
+        OK
+      </button>
+
+    </div>
+  </div>
+
+
+  <!-- =========================================
        JavaScript
        app.js は通常script
        顔検出だけ face-detector.js を module
@@ -282,13 +313,13 @@
   <script type="module" src="face-detector.js"></script>
 
   <script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", function () {
-      navigator.serviceWorker.register("./service-worker.js").catch(function (error) {
-        console.log("Service Worker registration failed:", error);
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("./service-worker.js").catch(function (error) {
+          console.log("Service Worker registration failed:", error);
+        });
       });
-    });
-  }
-</script>
+    }
+  </script>
 </body>
 </html>
