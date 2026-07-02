@@ -87,9 +87,12 @@
          ========================================= -->
     <section class="right-panel">
 
-      <!-- 店舗名 -->
+      <!-- 店舗名 / バージョン -->
       <header class="header header-area">
-        <div class="store-name shop-name">ALLURE</div>
+        <div class="store-title-row">
+          <div id="storeNameText" class="store-name shop-name">ALLURE</div>
+          <div id="appVersionText" class="app-version-text">Ver. 2026.07.02-01</div>
+       </div>
       </header>
 
       <!-- 日付時刻 -->
@@ -99,28 +102,28 @@
       </div>
 
       <!-- ID / PW -->
-      <div class="input-box info-area">
+      <div class="input-box info-area id-pw-area">
 
-        <div class="field-row input-row">
-          <label class="input-label" for="staffIdInput">ID</label>
-          <input
-            id="staffIdInput"
-            class="text-input staff-input"
-            type="text"
-            inputmode="none"
-            readonly
-            tabindex="-1"
-            autocomplete="off"
-            maxlength="20"
-            onfocus="this.blur();"
+       <div class="field-row input-row id-pw-row">
+         <label class="input-label id-pw-label" for="staffIdInput">ID</label>
+         <input
+           id="staffIdInput"
+           class="text-input staff-input id-pw-input"
+           type="text"
+           inputmode="none"
+           readonly
+           tabindex="-1"
+           autocomplete="off"
+           maxlength="20"
+           onfocus="this.blur();"
           >
         </div>
 
-        <div class="field-row input-row">
-          <label class="input-label" for="staffPwInput">PW</label>
+        <div class="field-row input-row id-pw-row">
+          <label class="input-label id-pw-label" for="staffPwInput">PW</label>
           <input
             id="staffPwInput"
-            class="text-input staff-input"
+            class="text-input staff-input id-pw-input"
             type="password"
             inputmode="none"
             readonly
