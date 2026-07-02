@@ -1136,6 +1136,14 @@ function renderStaffPunchStatus(statusList) {
       currentStatusClass = "status-before";
     }
 
+    if (
+      item.forgotClockOut === true ||
+      currentStatus.indexOf("退勤忘れ") !== -1 ||
+      String(item.forgotClockOutText || "").indexOf("退勤忘れ") !== -1
+    ) {
+      currentStatusClass = "status-forgot-clockout";
+    }
+
     return `
       <tr>
         <td>${escapeHtml(String(item.displayOrder || ""))}</td>
