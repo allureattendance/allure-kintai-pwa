@@ -596,3 +596,20 @@ input {
 .secondary-action-button {
   background: #6c757d;
 }
+
+/* ==============================
+   退勤忘れ表示
+   管理者画面 スタッフ打刻状況確認用
+   ============================== */
+
+.status-forgot-clockout {
+  display: inline-block;
+  min-width: 70px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #d00000;
+  color: #ffffff;
+  text-align: center;
+  font-weight: 900;
+  border: 3px solid #ff0000;
+}
