@@ -1212,3 +1212,101 @@ body {
   height: var(--app-height, 100vh);
   max-height: var(--app-height, 100vh);
 }
+
+/* ==============================
+   店舗名 / バージョン表示
+   ============================== */
+
+.store-title-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-version-text {
+  position: absolute;
+  right: 12px;
+  bottom: 6px;
+
+  font-size: 22px;
+  font-weight: 800;
+  color: #333333;
+
+  white-space: nowrap;
+}
+
+/* ==============================
+   ID / PW 横並び・入力中ピンク表示
+   ============================== */
+
+.id-pw-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+
+  height: 86px;
+  padding: 6px;
+
+  align-items: stretch;
+}
+
+.id-pw-row {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  align-items: center;
+  gap: 8px;
+
+  height: 100%;
+  padding: 6px 10px;
+
+  border: 3px solid #d0d0d0;
+  border-radius: 12px;
+
+  background: #ffffff;
+}
+
+.id-pw-label {
+  font-size: 28px;
+  font-weight: 900;
+  color: #111111;
+  text-align: center;
+}
+
+.id-pw-input {
+  width: 100%;
+  height: 58px;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  font-size: 38px;
+  font-weight: 900;
+  color: #111111;
+
+  text-align: center;
+}
+
+/* 入力中の欄をピンクで強調 */
+.id-pw-row:has(.active-input) {
+  background: #ffd6e7;
+  border-color: #fc7fbb;
+  box-shadow: 0 0 0 4px rgba(255, 79, 163, 0.25);
+}
+
+.id-pw-row:has(.active-input) .id-pw-label {
+  color: #c0005a;
+}
+
+.id-pw-row:has(.active-input) .id-pw-input {
+  color: #000000;
+}
+
+/* 既存の黄色枠を消す */
+.staff-input.active-input,
+.text-input.active-input {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
