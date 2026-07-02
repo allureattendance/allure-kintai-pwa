@@ -38,7 +38,8 @@ let clientSettings = {
   terminalName: "ALLURE入口",
   businessDaySwitchTime: "8:00",
   photoWidth: 640,
-  photoFolderName: "ALLURE_勤怠写真"
+  photoFolderName: "ALLURE_勤怠写真",
+  appVersion: "2026.07.02-01"
 };
 
 
@@ -128,11 +129,12 @@ async function loadClientSettings() {
 
     if (data.settings) {
       clientSettings = {
-        storeName: data.settings.storeName || clientSettings.storeName,
-        terminalName: data.settings.terminalName || clientSettings.terminalName,
-        businessDaySwitchTime: data.settings.businessDaySwitchTime || clientSettings.businessDaySwitchTime,
-        photoWidth: Number(data.settings.photoWidth || clientSettings.photoWidth),
-        photoFolderName: data.settings.photoFolderName || clientSettings.photoFolderName
+       storeName: data.settings.storeName || clientSettings.storeName,
+       terminalName: data.settings.terminalName || clientSettings.terminalName,
+       businessDaySwitchTime: data.settings.businessDaySwitchTime || clientSettings.businessDaySwitchTime,
+       photoWidth: Number(data.settings.photoWidth || clientSettings.photoWidth),
+       photoFolderName: data.settings.photoFolderName || clientSettings.photoFolderName,
+       appVersion: data.settings.appVersion || clientSettings.appVersion
       };
     }
 
@@ -145,6 +147,7 @@ async function loadClientSettings() {
 function applyClientSettingsToScreen() {
   const storeNameEl = document.getElementById("storeNameText");
   const terminalNameEl = document.getElementById("terminalNameText");
+  const appVersionEl = document.getElementById("appVersionText");
 
   if (storeNameEl) {
     storeNameEl.textContent = clientSettings.storeName;
@@ -152,6 +155,10 @@ function applyClientSettingsToScreen() {
 
   if (terminalNameEl) {
     terminalNameEl.textContent = clientSettings.terminalName;
+  }
+
+  if (appVersionEl) {
+    appVersionEl.textContent = "Ver. " + (clientSettings.appVersion || "");
   }
 }
 
