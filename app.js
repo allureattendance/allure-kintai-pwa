@@ -75,6 +75,7 @@ let punchManagementAdminName = "";
 let punchManagementAdminRole = "";
 let punchManagementStaffList = [];
 let punchManagementSelectedStaff = null;
+let punchManagementSelectedPunch = null;
 
 
 /* ==================================================
@@ -1372,6 +1373,13 @@ function setupPunchManagement() {
   const cancelManualConfirmButton = document.getElementById("btnCancelManualPunchConfirm");
   const executeManualAddButton = document.getElementById("btnExecuteManualPunchAdd");
   const manualPunchType = document.getElementById("manualPunchType");
+  const backToDetailFromPunchEditButton = document.getElementById("btnBackToDetailFromPunchEdit");
+  const cancelPunchTimeEditButton = document.getElementById("btnCancelPunchTimeEdit");
+  const punchTimeEditType = document.getElementById("punchTimeEditType");
+  const confirmPunchTimeEditButton = document.getElementById("btnConfirmPunchTimeEdit");
+  const backToPunchTimeEditFormButton = document.getElementById("btnBackToPunchTimeEditForm");
+  const cancelPunchTimeEditConfirmButton = document.getElementById("btnCancelPunchTimeEditConfirm");
+  const executePunchTimeEditButton = document.getElementById("btnExecutePunchTimeEdit");
 
   if (openButton) {
     openButton.addEventListener("click", openPunchManagement);
@@ -1450,6 +1458,55 @@ function setupPunchManagement() {
     manualPunchType.addEventListener("change", applyManualPunchReasonSuggestion);
   }
 
+  if (backToDetailFromPunchEditButton) {
+    backToDetailFromPunchEditButton.addEventListener(
+      "click",
+      showSelectedPunchManagementDetail
+    );
+  }
+
+  if (cancelPunchTimeEditButton) {
+    cancelPunchTimeEditButton.addEventListener(
+      "click",
+      showSelectedPunchManagementDetail
+    );
+  }
+
+  if (punchTimeEditType) {
+    punchTimeEditType.addEventListener(
+      "change",
+      applyPunchTimeEditReasonSuggestion
+    );
+  }
+
+  if (confirmPunchTimeEditButton) {
+    confirmPunchTimeEditButton.addEventListener(
+      "click",
+      showPunchTimeEditConfirmArea
+    );
+  }
+
+  if (backToPunchTimeEditFormButton) {
+    backToPunchTimeEditFormButton.addEventListener(
+      "click",
+      showPunchTimeEditArea
+    );
+  }
+
+  if (cancelPunchTimeEditConfirmButton) {
+    cancelPunchTimeEditConfirmButton.addEventListener(
+      "click",
+      showPunchTimeEditArea
+    );
+  }
+
+  if (executePunchTimeEditButton) {
+    executePunchTimeEditButton.addEventListener(
+      "click",
+      executePunchTimeEdit
+    );
+  }
+
   document.addEventListener("keydown", function (event) {
     if (event.key !== "Escape") {
       return;
@@ -1503,6 +1560,7 @@ function resetPunchManagement() {
   punchManagementAdminRole = "";
   punchManagementStaffList = [];
   punchManagementSelectedStaff = null;
+  punchManagementSelectedPunch = null;
 
   const loginArea = document.getElementById("punchManagementLoginArea");
   const staffArea = document.getElementById("punchManagementStaffArea");
@@ -1515,12 +1573,16 @@ function resetPunchManagement() {
   const detailArea = document.getElementById("punchManagementDetailArea");
   const manualAddArea = document.getElementById("manualPunchAddArea");
   const manualConfirmArea = document.getElementById("manualPunchConfirmArea");
+  const punchTimeEditArea = document.getElementById("punchTimeEditArea");
+  const punchTimeEditConfirmArea = document.getElementById("punchTimeEditConfirmArea");
 
   if (loginArea) loginArea.classList.remove("hidden");
   if (staffArea) staffArea.classList.add("hidden");
   if (detailArea) detailArea.classList.add("hidden");
   if (manualAddArea) manualAddArea.classList.add("hidden");
   if (manualConfirmArea) manualConfirmArea.classList.add("hidden");
+  if (punchTimeEditArea) punchTimeEditArea.classList.add("hidden");
+  if (punchTimeEditConfirmArea) punchTimeEditConfirmArea.classList.add("hidden");
   if (adminIdInput) adminIdInput.value = "";
   if (adminPwInput) adminPwInput.value = "";
   if (searchInput) searchInput.value = "";
@@ -1668,6 +1730,8 @@ function showPunchManagementStaffArea() {
   const detailArea = document.getElementById("punchManagementDetailArea");
   const manualAddArea = document.getElementById("manualPunchAddArea");
   const manualConfirmArea = document.getElementById("manualPunchConfirmArea");
+  const punchTimeEditArea = document.getElementById("punchTimeEditArea");
+  const punchTimeEditConfirmArea = document.getElementById("punchTimeEditConfirmArea");
   const loginAdminText = document.getElementById("punchManagementLoginAdminText");
   const searchInput = document.getElementById("punchManagementStaffSearch");
 
@@ -1676,6 +1740,8 @@ function showPunchManagementStaffArea() {
   if (detailArea) detailArea.classList.add("hidden");
   if (manualAddArea) manualAddArea.classList.add("hidden");
   if (manualConfirmArea) manualConfirmArea.classList.add("hidden");
+  if (punchTimeEditArea) punchTimeEditArea.classList.add("hidden");
+  if (punchTimeEditConfirmArea) punchTimeEditConfirmArea.classList.add("hidden");
 
   if (loginAdminText) {
     const roleText =
@@ -1863,16 +1929,21 @@ function openPunchManagementDetail(staffCode) {
   }
 
   punchManagementSelectedStaff = staff;
+  punchManagementSelectedPunch = null;
 
   const staffArea = document.getElementById("punchManagementStaffArea");
   const detailArea = document.getElementById("punchManagementDetailArea");
   const manualAddArea = document.getElementById("manualPunchAddArea");
   const manualConfirmArea = document.getElementById("manualPunchConfirmArea");
+  const punchTimeEditArea = document.getElementById("punchTimeEditArea");
+  const punchTimeEditConfirmArea = document.getElementById("punchTimeEditConfirmArea");
 
   if (staffArea) staffArea.classList.add("hidden");
   if (detailArea) detailArea.classList.remove("hidden");
   if (manualAddArea) manualAddArea.classList.add("hidden");
   if (manualConfirmArea) manualConfirmArea.classList.add("hidden");
+  if (punchTimeEditArea) punchTimeEditArea.classList.add("hidden");
+  if (punchTimeEditConfirmArea) punchTimeEditConfirmArea.classList.add("hidden");
 
   renderPunchManagementDetail(staff);
 }
@@ -1952,22 +2023,78 @@ function renderPunchManagementRecentHistory(historyList) {
   if (!historyList.length) {
     historyBody.innerHTML = `
       <tr>
-        <td colspan="4">打刻履歴はありません。</td>
+        <td colspan="5">打刻履歴はありません。</td>
       </tr>
     `;
     return;
   }
 
   historyBody.innerHTML = historyList.map(function (item) {
+    const rowNumber = String(item.rowNumber || "");
+    const punchId = String(item.punchId || "");
+
     return `
       <tr>
         <td>${escapePunchManagementHtml(item.recordedAt || "")}</td>
         <td>${escapePunchManagementHtml(item.businessDate || "")}</td>
         <td>${escapePunchManagementHtml(item.displayTime || "")}</td>
         <td>${escapePunchManagementHtml(item.punchType || "")}</td>
+        <td>
+          <button
+            class="punch-history-edit-button"
+            type="button"
+            data-row-number="${escapePunchManagementHtml(rowNumber)}"
+            data-punch-id="${escapePunchManagementHtml(punchId)}"
+          >
+            修正
+          </button>
+        </td>
       </tr>
     `;
   }).join("");
+
+  setupPunchHistoryEditButtons(historyList);
+}
+
+
+function setupPunchHistoryEditButtons(historyList) {
+  const buttons = document.querySelectorAll(".punch-history-edit-button");
+
+  buttons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      const rowNumber = String(button.dataset.rowNumber || "");
+      const punchId = String(button.dataset.punchId || "");
+
+      const selectedPunch = historyList.find(function (item) {
+        return (
+          String(item.rowNumber || "") === rowNumber &&
+          String(item.punchId || "") === punchId
+        );
+      });
+
+      if (!selectedPunch) {
+        punchManagementSelectedPunch = null;
+
+        showPunchManagementDetailMessage(
+          "修正対象の打刻情報が見つかりません。スタッフ一覧を更新してください。",
+          "error"
+        );
+
+        return;
+      }
+
+      punchManagementSelectedPunch = {
+        rowNumber: selectedPunch.rowNumber,
+        punchId: selectedPunch.punchId,
+        recordedAt: selectedPunch.recordedAt || "",
+        businessDate: selectedPunch.businessDate || "",
+        displayTime: selectedPunch.displayTime || "",
+        punchType: selectedPunch.punchType || ""
+      };
+
+      openPunchTimeEditArea();
+    });
+  });
 }
 
 
@@ -2083,7 +2210,9 @@ function showPunchManagementArea(areaId) {
     "punchManagementStaffArea",
     "punchManagementDetailArea",
     "manualPunchAddArea",
-    "manualPunchConfirmArea"
+    "manualPunchConfirmArea",
+    "punchTimeEditArea",
+    "punchTimeEditConfirmArea"
   ];
 
   areaIds.forEach(function (id) {
@@ -2402,6 +2531,496 @@ async function refreshPunchManagementStaffList(selectedStaffCode) {
       "success"
     );
   }
+}
+
+
+function openPunchTimeEditArea() {
+  if (!punchManagementSelectedStaff) {
+    showPunchManagementDetailMessage(
+      "スタッフが選択されていません。",
+      "warning"
+    );
+    return;
+  }
+
+  if (!punchManagementSelectedPunch) {
+    showPunchManagementDetailMessage(
+      "修正する打刻を選択してください。",
+      "warning"
+    );
+    return;
+  }
+
+  initializePunchTimeEdit();
+  showPunchManagementArea("punchTimeEditArea");
+
+  showPunchTimeEditFormMessage(
+    "修正内容を入力してください。",
+    ""
+  );
+}
+
+
+function initializePunchTimeEdit() {
+  const targetText = document.getElementById("punchTimeEditTargetText");
+  const beforeDateTimeEl = document.getElementById("punchTimeEditBeforeDateTime");
+  const beforeTypeEl = document.getElementById("punchTimeEditBeforeType");
+  const beforeBusinessDateEl = document.getElementById("punchTimeEditBeforeBusinessDate");
+  const recordedAtInput = document.getElementById("punchTimeEditRecordedAt");
+  const typeSelect = document.getElementById("punchTimeEditType");
+  const reasonSelect = document.getElementById("punchTimeEditReason");
+  const memoInput = document.getElementById("punchTimeEditMemo");
+
+  if (targetText) {
+    targetText.textContent =
+      "修正対象：" +
+      (punchManagementSelectedStaff.staffName || "") +
+      " / ID：" +
+      (punchManagementSelectedStaff.staffCode || "");
+  }
+
+  if (beforeDateTimeEl) {
+    beforeDateTimeEl.textContent =
+      punchManagementSelectedPunch.recordedAt || "-";
+  }
+
+  if (beforeTypeEl) {
+    beforeTypeEl.textContent =
+      punchManagementSelectedPunch.punchType || "-";
+  }
+
+  if (beforeBusinessDateEl) {
+    beforeBusinessDateEl.textContent =
+      punchManagementSelectedPunch.businessDate || "-";
+  }
+
+  if (recordedAtInput) {
+    recordedAtInput.value = convertRecordedAtToDateTimeLocal(
+      punchManagementSelectedPunch.recordedAt || ""
+    );
+  }
+
+  if (typeSelect) {
+    typeSelect.value =
+      punchManagementSelectedPunch.punchType || "出勤";
+  }
+
+  if (reasonSelect) {
+    reasonSelect.value = "";
+  }
+
+  if (memoInput) {
+    memoInput.value = "";
+  }
+
+  applyPunchTimeEditReasonSuggestion();
+}
+
+
+function convertRecordedAtToDateTimeLocal(recordedAt) {
+  const value = String(recordedAt || "").trim();
+
+  const match = value.match(
+    /^(\d{4})\/(\d{2})\/(\d{2})\s+(\d{2}):(\d{2})(?::\d{2})?$/
+  );
+
+  if (!match) {
+    return "";
+  }
+
+  return (
+    match[1] +
+    "-" +
+    match[2] +
+    "-" +
+    match[3] +
+    "T" +
+    match[4] +
+    ":" +
+    match[5]
+  );
+}
+
+
+function applyPunchTimeEditReasonSuggestion() {
+  const typeSelect = document.getElementById("punchTimeEditType");
+  const reasonSelect = document.getElementById("punchTimeEditReason");
+
+  if (!typeSelect || !reasonSelect || !punchManagementSelectedPunch) {
+    return;
+  }
+
+  const beforeType = String(
+    punchManagementSelectedPunch.punchType || ""
+  ).trim();
+
+  const afterType = String(typeSelect.value || "").trim();
+
+  if (beforeType && afterType && beforeType !== afterType) {
+    reasonSelect.value = "打刻種別修正";
+    return;
+  }
+
+  const reasonMap = {
+    "出勤": "出勤時刻修正",
+    "退勤": "退勤時刻修正",
+    "外出": "外出時刻修正",
+    "戻り": "戻り時刻修正"
+  };
+
+  reasonSelect.value = reasonMap[afterType] || "";
+}
+
+
+function showPunchTimeEditArea() {
+  if (!punchManagementSelectedStaff || !punchManagementSelectedPunch) {
+    showPunchManagementStaffArea();
+    return;
+  }
+
+  showPunchManagementArea("punchTimeEditArea");
+
+  showPunchTimeEditFormMessage(
+    "修正内容を確認してください。",
+    ""
+  );
+}
+
+
+function getPunchTimeEditFormData() {
+  const recordedAtInput = document.getElementById("punchTimeEditRecordedAt");
+  const typeSelect = document.getElementById("punchTimeEditType");
+  const reasonSelect = document.getElementById("punchTimeEditReason");
+  const memoInput = document.getElementById("punchTimeEditMemo");
+
+  return {
+    editedRecordedAt: recordedAtInput
+      ? String(recordedAtInput.value || "").trim()
+      : "",
+    editedPunchType: typeSelect
+      ? String(typeSelect.value || "").trim()
+      : "",
+    reason: reasonSelect
+      ? String(reasonSelect.value || "").trim()
+      : "",
+    memo: memoInput
+      ? String(memoInput.value || "").trim()
+      : ""
+  };
+}
+
+
+function validatePunchTimeEditForm(formData) {
+  if (!punchManagementSelectedStaff) {
+    return "スタッフが選択されていません。";
+  }
+
+  if (!punchManagementSelectedPunch) {
+    return "修正する打刻が選択されていません。";
+  }
+
+  if (!formData.editedRecordedAt) {
+    return "修正後打刻日時を入力してください。";
+  }
+
+  if (!formData.editedPunchType) {
+    return "修正後打刻種別を選択してください。";
+  }
+
+  if (!["出勤", "退勤", "外出", "戻り"].includes(formData.editedPunchType)) {
+    return "修正後打刻種別が正しくありません。";
+  }
+
+  if (!formData.reason) {
+    return "修正理由を選択してください。";
+  }
+
+  if (formData.reason === "その他" && !formData.memo) {
+    return "理由が「その他」の場合は補足メモを入力してください。";
+  }
+
+  const beforeDateTime = convertRecordedAtToDateTimeLocal(
+    punchManagementSelectedPunch.recordedAt || ""
+  );
+
+  const beforeType = String(
+    punchManagementSelectedPunch.punchType || ""
+  ).trim();
+
+  if (
+    beforeDateTime === formData.editedRecordedAt &&
+    beforeType === formData.editedPunchType
+  ) {
+    return "修正前と修正後の内容が同じです。日時または打刻種別を変更してください。";
+  }
+
+  return "";
+}
+
+
+function formatDateTimeLocalForDisplay(value) {
+  const text = String(value || "").trim();
+
+  const match = text.match(
+    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/
+  );
+
+  if (!match) {
+    return text || "-";
+  }
+
+  return (
+    match[1] +
+    "/" +
+    match[2] +
+    "/" +
+    match[3] +
+    " " +
+    match[4] +
+    ":" +
+    match[5]
+  );
+}
+
+
+function showPunchTimeEditConfirmArea() {
+  const formData = getPunchTimeEditFormData();
+  const errorMessage = validatePunchTimeEditForm(formData);
+
+  if (errorMessage) {
+    showPunchTimeEditFormMessage(errorMessage, "warning");
+    return;
+  }
+
+  const staffEl = document.getElementById("punchTimeEditConfirmStaff");
+  const beforeEl = document.getElementById("punchTimeEditConfirmBefore");
+  const afterEl = document.getElementById("punchTimeEditConfirmAfter");
+  const reasonEl = document.getElementById("punchTimeEditConfirmReason");
+  const memoEl = document.getElementById("punchTimeEditConfirmMemo");
+
+  if (staffEl) {
+    staffEl.textContent =
+      (punchManagementSelectedStaff.staffName || "") +
+      " / ID：" +
+      (punchManagementSelectedStaff.staffCode || "");
+  }
+
+  if (beforeEl) {
+    beforeEl.textContent =
+      (punchManagementSelectedPunch.recordedAt || "-") +
+      " / " +
+      (punchManagementSelectedPunch.punchType || "-");
+  }
+
+  if (afterEl) {
+    afterEl.textContent =
+      formatDateTimeLocalForDisplay(formData.editedRecordedAt) +
+      " / " +
+      formData.editedPunchType;
+  }
+
+  if (reasonEl) {
+    reasonEl.textContent = formData.reason;
+  }
+
+  if (memoEl) {
+    memoEl.textContent = formData.memo || "なし";
+  }
+
+  showPunchManagementArea("punchTimeEditConfirmArea");
+
+  showPunchTimeEditConfirmMessage(
+    "修正後は打刻Dataが更新され、修正履歴に記録されます。",
+    "warning"
+  );
+}
+
+
+async function executePunchTimeEdit() {
+  const executeButton = document.getElementById("btnExecutePunchTimeEdit");
+  const formData = getPunchTimeEditFormData();
+  const errorMessage = validatePunchTimeEditForm(formData);
+
+  if (errorMessage) {
+    showPunchTimeEditConfirmMessage(errorMessage, "error");
+    return;
+  }
+
+  if (!punchManagementSelectedStaff || !punchManagementSelectedPunch) {
+    showPunchTimeEditConfirmMessage(
+      "修正対象の情報がありません。スタッフカルテから選び直してください。",
+      "error"
+    );
+    return;
+  }
+
+  const ok = window.confirm(
+    "この内容で修正しますか？\n\n" +
+    "修正後は打刻Dataが更新され、修正履歴に記録されます。"
+  );
+
+  if (!ok) {
+    showPunchTimeEditConfirmMessage(
+      "修正はキャンセルされました。",
+      "warning"
+    );
+    return;
+  }
+
+  if (!isGasUrlSet()) {
+    return;
+  }
+
+  if (executeButton) {
+    executeButton.disabled = true;
+    executeButton.textContent = "修正中...";
+  }
+
+  showPunchTimeEditConfirmMessage(
+    "打刻Dataを修正中...",
+    ""
+  );
+
+  try {
+    const response = await fetch(GAS_API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "updatePunchData",
+        loginAdminId: punchManagementAdminId,
+        loginAdminPw: punchManagementAdminPw,
+        rowNumber: punchManagementSelectedPunch.rowNumber,
+        punchId: punchManagementSelectedPunch.punchId,
+        newRecordedAt: formData.editedRecordedAt,
+        newPunchType: formData.editedPunchType,
+        reason: formData.reason,
+        editMemo: formData.memo
+      })
+    });
+
+    const data = await response.json();
+
+    if (!data.success) {
+      showPunchTimeEditConfirmMessage(
+        data.message || "打刻Dataの修正に失敗しました。",
+        "error"
+      );
+      return;
+    }
+
+    const selectedStaffCode =
+      punchManagementSelectedStaff.staffCode || "";
+
+    showPunchTimeEditConfirmMessage(
+      data.message || "打刻Dataを修正しました。",
+      "success"
+    );
+
+    window.alert(
+      "修正が完了しました。\n\n" +
+      "打刻Dataを更新し、修正履歴へ記録しました。"
+    );
+
+    punchManagementSelectedPunch = null;
+
+    await refreshPunchManagementStaffListAfterEdit(
+      selectedStaffCode
+    );
+
+  } catch (error) {
+    console.error("打刻時間修正エラー:", error);
+
+    sendErrorLog(
+      "打刻時間修正エラー",
+      "管理者による打刻時間修正でエラーが発生しました",
+      "executePunchTimeEdit",
+      error && error.message ? error.message : String(error)
+    );
+
+    showPunchTimeEditConfirmMessage(
+      "打刻Dataの修正中にエラーが発生しました。",
+      "error"
+    );
+
+  } finally {
+    if (executeButton) {
+      executeButton.disabled = false;
+      executeButton.textContent = "修正実行";
+    }
+  }
+}
+
+
+async function refreshPunchManagementStaffListAfterEdit(selectedStaffCode) {
+  const response = await fetch(GAS_API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "getForgotPunchList",
+      loginAdminId: punchManagementAdminId,
+      loginAdminPw: punchManagementAdminPw
+    })
+  });
+
+  const data = await response.json();
+
+  if (!data.success) {
+    throw new Error(
+      data.message || "修正後のスタッフ一覧再取得に失敗しました。"
+    );
+  }
+
+  punchManagementStaffList = Array.isArray(data.staffList)
+    ? data.staffList
+    : [];
+
+  punchManagementSelectedStaff =
+    punchManagementStaffList.find(function (item) {
+      return String(item.staffCode || "") ===
+        String(selectedStaffCode || "");
+    }) || null;
+
+  renderPunchManagementStaffList(punchManagementStaffList);
+
+  if (!punchManagementSelectedStaff) {
+    showPunchManagementStaffArea();
+
+    showPunchManagementListMessage(
+      "打刻修正は完了しましたが、対象スタッフを再表示できませんでした。",
+      "warning"
+    );
+
+    return;
+  }
+
+  openPunchManagementDetail(
+    punchManagementSelectedStaff.staffCode || ""
+  );
+
+  showPunchManagementDetailMessage(
+    "打刻修正が完了し、最新20件と現在状態を更新しました。",
+    "success"
+  );
+}
+
+
+function showPunchTimeEditConfirmMessage(message, type) {
+  const el = document.getElementById("punchTimeEditConfirmMessage");
+
+  if (!el) {
+    return;
+  }
+
+  setPunchManagementMessage(el, message, type);
+}
+
+
+function showPunchTimeEditFormMessage(message, type) {
+  const el = document.getElementById("punchTimeEditFormMessage");
+
+  if (!el) {
+    return;
+  }
+
+  setPunchManagementMessage(el, message, type);
 }
 
 

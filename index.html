@@ -462,7 +462,7 @@
         </div>
 
         <div class="punch-management-detail-block">
-          <div class="punch-management-section-title">最新打刻履歴（5件）</div>
+          <div class="punch-management-section-title">最新打刻履歴（20件）</div>
 
           <div class="punch-management-table-wrap">
             <table class="punch-management-table punch-management-history-table">
@@ -472,6 +472,7 @@
                   <th>営業日</th>
                   <th>表示時刻</th>
                   <th>打刻種別</th>
+                  <th>修正</th>
                 </tr>
               </thead>
               <tbody id="punchManagementRecentHistory">
@@ -503,7 +504,7 @@
             type="button"
             disabled
           >
-            時間修正（準備中）
+            履歴の修正ボタンを使用
           </button>
 
           <button
@@ -700,6 +701,201 @@
             type="button"
           >
             追加実行
+          </button>
+        </div>
+      </section>
+
+
+      <!-- 打刻時間修正 入力エリア -->
+      <section id="punchTimeEditArea" class="punch-management-section hidden">
+        <div class="punch-management-detail-header">
+          <button
+            id="btnBackToDetailFromPunchEdit"
+            class="punch-management-secondary-button"
+            type="button"
+          >
+            スタッフカルテへ戻る
+          </button>
+
+          <div class="punch-management-detail-title-wrap">
+            <div class="punch-management-detail-name">
+              打刻時間修正
+            </div>
+            <div id="punchTimeEditTargetText" class="punch-management-detail-code">
+              修正対象：未選択
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-punch-confirm-card punch-edit-before-card">
+
+          <div class="manual-punch-confirm-row">
+            <div class="manual-punch-confirm-label">現在の打刻日時</div>
+            <div id="punchTimeEditBeforeDateTime" class="manual-punch-confirm-value">-</div>
+          </div>
+
+          <div class="manual-punch-confirm-row">
+            <div class="manual-punch-confirm-label">現在の打刻種別</div>
+            <div id="punchTimeEditBeforeType" class="manual-punch-confirm-value">-</div>
+          </div>
+
+          <div class="manual-punch-confirm-row">
+            <div class="manual-punch-confirm-label">営業日</div>
+            <div id="punchTimeEditBeforeBusinessDate" class="manual-punch-confirm-value">-</div>
+          </div>
+
+        </div>
+
+        <div class="manual-punch-form punch-edit-form">
+
+          <div class="manual-punch-form-row">
+            <label for="punchTimeEditRecordedAt">修正後打刻日時</label>
+            <input
+              id="punchTimeEditRecordedAt"
+              class="punch-management-input"
+              type="datetime-local"
+            >
+          </div>
+
+          <div class="manual-punch-form-row">
+            <label for="punchTimeEditType">修正後打刻種別</label>
+            <select
+              id="punchTimeEditType"
+              class="punch-management-input"
+            >
+              <option value="出勤">出勤</option>
+              <option value="退勤">退勤</option>
+              <option value="外出">外出</option>
+              <option value="戻り">戻り</option>
+            </select>
+          </div>
+
+          <div class="manual-punch-form-row">
+            <label for="punchTimeEditReason">修正理由</label>
+            <select
+              id="punchTimeEditReason"
+              class="punch-management-input"
+            >
+              <option value="">選択してください</option>
+              <option value="出勤時刻修正">出勤時刻修正</option>
+              <option value="退勤時刻修正">退勤時刻修正</option>
+              <option value="外出時刻修正">外出時刻修正</option>
+              <option value="戻り時刻修正">戻り時刻修正</option>
+              <option value="打刻種別修正">打刻種別修正</option>
+              <option value="管理者確認による修正">管理者確認による修正</option>
+              <option value="その他">その他</option>
+            </select>
+          </div>
+
+          <div class="manual-punch-form-row">
+            <label for="punchTimeEditMemo">
+              補足メモ
+              <span class="manual-punch-optional">（任意）</span>
+            </label>
+            <textarea
+              id="punchTimeEditMemo"
+              class="manual-punch-textarea"
+              rows="3"
+              maxlength="200"
+              placeholder="必要な場合のみ入力してください"
+            ></textarea>
+          </div>
+
+          <div id="punchTimeEditFormMessage" class="punch-management-message">
+            修正内容を入力してください。
+          </div>
+
+          <div class="manual-punch-action-row">
+            <button
+              id="btnCancelPunchTimeEdit"
+              class="punch-management-secondary-action-button"
+              type="button"
+            >
+              キャンセル
+            </button>
+
+            <button
+              id="btnConfirmPunchTimeEdit"
+              class="punch-edit-action-button"
+              type="button"
+            >
+              内容確認
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- 打刻時間修正 確認エリア -->
+      <section id="punchTimeEditConfirmArea" class="punch-management-section hidden">
+        <div class="punch-management-detail-header">
+          <button
+            id="btnBackToPunchTimeEditForm"
+            class="punch-management-secondary-button"
+            type="button"
+          >
+            入力画面へ戻る
+          </button>
+
+          <div class="punch-management-detail-title-wrap">
+            <div class="punch-management-detail-name">
+              打刻修正内容の確認
+            </div>
+            <div class="punch-management-detail-code">
+              修正前と修正後を確認してください。
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-punch-confirm-card">
+
+          <div class="manual-punch-confirm-row">
+            <div class="manual-punch-confirm-label">スタッフ</div>
+            <div id="punchTimeEditConfirmStaff" class="manual-punch-confirm-value">-</div>
+          </div>
+
+          <div class="manual-punch-confirm-row">
+            <div class="manual-punch-confirm-label">修正前</div>
+            <div id="punchTimeEditConfirmBefore" class="manual-punch-confirm-value">-</div>
+          </div>
+
+          <div class="manual-punch-confirm-row">
+            <div class="manual-punch-confirm-label">修正後</div>
+            <div id="punchTimeEditConfirmAfter" class="manual-punch-confirm-value">-</div>
+          </div>
+
+          <div class="manual-punch-confirm-row">
+            <div class="manual-punch-confirm-label">理由</div>
+            <div id="punchTimeEditConfirmReason" class="manual-punch-confirm-value">-</div>
+          </div>
+
+          <div class="manual-punch-confirm-row">
+            <div class="manual-punch-confirm-label">補足メモ</div>
+            <div id="punchTimeEditConfirmMemo" class="manual-punch-confirm-value">-</div>
+          </div>
+
+        </div>
+
+        <div id="punchTimeEditConfirmMessage" class="punch-management-message warning">
+          修正後は打刻Dataが更新され、修正履歴に記録されます。
+        </div>
+
+        <div class="manual-punch-action-row">
+          <button
+            id="btnCancelPunchTimeEditConfirm"
+            class="punch-management-secondary-action-button"
+            type="button"
+          >
+            キャンセル
+          </button>
+
+          <button
+            id="btnExecutePunchTimeEdit"
+            class="punch-edit-action-button"
+            type="button"
+          >
+            修正実行
           </button>
         </div>
       </section>

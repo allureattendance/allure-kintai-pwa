@@ -2677,3 +2677,143 @@ body {
     border-bottom: 1px solid #d7d7d7;
   }
 }
+
+/* ==================================================
+   Rev16 打刻時間修正
+   ================================================== */
+
+.punch-edit-before-card {
+  margin-bottom: 18px;
+}
+
+.punch-edit-form {
+  margin-top: 18px;
+}
+
+.punch-edit-action-button {
+  width: 100%;
+  min-height: 64px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: #f28c28;
+  color: #ffffff;
+
+  font-size: 22px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.28);
+}
+
+.punch-edit-action-button:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.28);
+}
+
+.punch-edit-action-button:disabled {
+  background: #adb5bd;
+  color: #eeeeee;
+
+  cursor: wait;
+  box-shadow: none;
+}
+
+
+/* ==================================================
+   Rev16 履歴一覧の修正ボタン
+   ================================================== */
+
+.punch-history-edit-button {
+  min-width: 78px;
+  height: 38px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: #f28c28;
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: 900;
+
+  cursor: pointer;
+}
+
+.punch-history-edit-button:active {
+  transform: translateY(2px);
+}
+
+.punch-management-history-table th:last-child,
+.punch-management-history-table td:last-child {
+  text-align: center;
+}
+
+
+/* ==================================================
+   Rev16 修正確認表示
+   ================================================== */
+
+.punch-edit-before-text {
+  color: #6c757d;
+}
+
+.punch-edit-after-text {
+  color: #f28c28;
+}
+
+.punch-edit-arrow {
+  margin: 0 10px;
+
+  color: #111111;
+
+  font-weight: 900;
+}
+
+
+/* ==================================================
+   Rev16 Androidタブレット横向き対応
+   ================================================== */
+
+@media (orientation: landscape) and (max-width: 1280px),
+       (orientation: landscape) and (max-height: 760px) {
+  .punch-edit-before-card {
+    margin-bottom: 11px;
+  }
+
+  .punch-edit-form {
+    margin-top: 11px;
+  }
+
+  .punch-edit-action-button {
+    min-height: 50px;
+
+    border-radius: 11px;
+
+    font-size: 17px;
+  }
+
+  .punch-history-edit-button {
+    min-width: 66px;
+    height: 32px;
+
+    border-radius: 7px;
+
+    font-size: 13px;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 650px) {
+  .punch-edit-action-button {
+    min-height: 44px;
+    font-size: 15px;
+  }
+
+  .punch-history-edit-button {
+    min-width: 60px;
+    height: 29px;
+    font-size: 12px;
+  }
+}
