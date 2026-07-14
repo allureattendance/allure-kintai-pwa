@@ -1498,3 +1498,1182 @@ body {
   }
 }
 
+/* ==================================================
+   打刻管理ボタン
+   ================================================== */
+
+.punch-management-button {
+  width: 170px;
+  background: #198754;
+}
+
+.punch-management-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+
+/* ==================================================
+   打刻管理モーダル
+   第1段階：
+   ・管理者認証
+   ・有効スタッフ一覧
+   ・名前検索
+   ================================================== */
+
+.punch-management-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 18px;
+
+  background: rgba(0, 0, 0, 0.72);
+
+  pointer-events: auto;
+}
+
+.punch-management-modal.hidden {
+  display: none !important;
+}
+
+.punch-management-card {
+  width: min(1180px, 96vw);
+  max-height: 94vh;
+
+  overflow: hidden;
+
+  background: #f8f9fa;
+
+  border: 5px solid #c9a349;
+  border-radius: 24px;
+
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.48);
+
+  display: flex;
+  flex-direction: column;
+
+  pointer-events: auto;
+}
+
+.punch-management-header {
+  min-height: 76px;
+
+  padding: 14px 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #111111;
+  color: #ffffff;
+}
+
+.punch-management-title {
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.punch-management-close-button {
+  width: 58px;
+  height: 52px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #dc3545;
+  color: #ffffff;
+
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.punch-management-close-button:active {
+  transform: scale(0.95);
+}
+
+.punch-management-section {
+  padding: 20px;
+
+  overflow-y: auto;
+}
+
+.punch-management-section-title {
+  font-size: 27px;
+  font-weight: 900;
+
+  color: #111111;
+
+  margin-bottom: 16px;
+}
+
+.punch-management-form-row {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 14px;
+  align-items: center;
+
+  margin-bottom: 14px;
+}
+
+.punch-management-form-row label,
+.punch-management-search-wrap label {
+  font-size: 22px;
+  font-weight: 900;
+
+  color: #222222;
+}
+
+.punch-management-input {
+  width: 100%;
+  height: 56px;
+
+  border: 3px solid #bbbbbb;
+  border-radius: 12px;
+
+  padding: 0 14px;
+
+  background: #ffffff;
+  color: #111111;
+
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.punch-management-input:focus {
+  outline: none;
+
+  border-color: #c9a349;
+
+  box-shadow: 0 0 0 4px rgba(201, 163, 73, 0.22);
+}
+
+.punch-management-primary-button,
+.punch-management-secondary-button {
+  border: none;
+  border-radius: 14px;
+
+  color: #ffffff;
+
+  font-weight: 900;
+
+  cursor: pointer;
+}
+
+.punch-management-primary-button {
+  width: 100%;
+  height: 64px;
+
+  margin-top: 4px;
+
+  background: #0d6efd;
+
+  font-size: 27px;
+
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.28);
+}
+
+.punch-management-primary-button:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.28);
+}
+
+.punch-management-secondary-button {
+  min-width: 190px;
+  height: 48px;
+
+  padding: 0 16px;
+
+  background: #6c757d;
+
+  font-size: 18px;
+}
+
+.punch-management-secondary-button:active {
+  transform: translateY(2px);
+}
+
+.punch-management-message {
+  min-height: 48px;
+
+  margin-top: 14px;
+  padding: 11px 14px;
+
+  border-radius: 12px;
+
+  background: #111111;
+  color: #ffffff;
+
+  font-size: 18px;
+  font-weight: 800;
+
+  display: flex;
+  align-items: center;
+}
+
+.punch-management-message.error {
+  background: #b00020;
+}
+
+.punch-management-message.success {
+  background: #198754;
+}
+
+.punch-management-message.warning {
+  background: #b26a00;
+}
+
+.punch-management-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.punch-management-login-admin-text {
+  font-size: 18px;
+  font-weight: 800;
+
+  color: #444444;
+}
+
+.punch-management-search-wrap {
+  margin-top: 16px;
+
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 14px;
+  align-items: center;
+}
+
+.punch-management-table-wrap {
+  width: 100%;
+  max-height: 54vh;
+
+  margin-top: 14px;
+
+  overflow: auto;
+
+  border: 2px solid #cccccc;
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+.punch-management-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  background: #ffffff;
+
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.punch-management-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+
+  padding: 11px 10px;
+
+  border: 1px solid #444444;
+
+  background: #222222;
+  color: #ffffff;
+
+  white-space: nowrap;
+}
+
+.punch-management-table td {
+  padding: 10px;
+
+  border: 1px solid #cccccc;
+
+  vertical-align: middle;
+
+  white-space: nowrap;
+}
+
+.punch-management-table tbody tr:nth-child(even) {
+  background: #f3f5f7;
+}
+
+.punch-management-table tbody tr:hover {
+  background: #fff3cd;
+}
+
+.punch-management-status {
+  display: inline-block;
+
+  min-width: 92px;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  text-align: center;
+
+  color: #ffffff;
+
+  font-weight: 900;
+}
+
+.punch-management-status.status-before {
+  background: #6c757d;
+}
+
+.punch-management-status.status-working {
+  background: #198754;
+}
+
+.punch-management-status.status-away {
+  background: #b26a00;
+}
+
+.punch-management-status.status-ended {
+  background: #343a40;
+}
+
+.punch-management-status.status-forgot {
+  background: #d00000;
+
+  border: 2px solid #ff0000;
+}
+
+.punch-management-row-button {
+  min-width: 92px;
+  height: 40px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #0d6efd;
+  color: #ffffff;
+
+  font-size: 16px;
+  font-weight: 900;
+
+  cursor: pointer;
+}
+
+.punch-management-row-button:active {
+  transform: translateY(2px);
+}
+
+
+/* ==================================================
+   打刻管理
+   Androidタブレット横向き対応
+   ================================================== */
+
+@media (orientation: landscape) and (max-width: 1280px),
+       (orientation: landscape) and (max-height: 760px) {
+  .punch-management-button {
+    width: 132px;
+    font-size: 14px;
+  }
+
+  .punch-management-card {
+    width: min(1060px, 97vw);
+    max-height: 95vh;
+
+    border-width: 4px;
+    border-radius: 18px;
+  }
+
+  .punch-management-header {
+    min-height: 58px;
+
+    padding: 9px 13px;
+  }
+
+  .punch-management-title {
+    font-size: 25px;
+  }
+
+  .punch-management-close-button {
+    width: 46px;
+    height: 42px;
+
+    border-radius: 9px;
+
+    font-size: 29px;
+  }
+
+  .punch-management-section {
+    padding: 13px;
+  }
+
+  .punch-management-section-title {
+    font-size: 21px;
+
+    margin-bottom: 10px;
+  }
+
+  .punch-management-form-row,
+  .punch-management-search-wrap {
+    grid-template-columns: 130px 1fr;
+    gap: 9px;
+  }
+
+  .punch-management-form-row {
+    margin-bottom: 9px;
+  }
+
+  .punch-management-form-row label,
+  .punch-management-search-wrap label {
+    font-size: 17px;
+  }
+
+  .punch-management-input {
+    height: 42px;
+
+    border-width: 2px;
+    border-radius: 9px;
+
+    padding: 0 10px;
+
+    font-size: 18px;
+  }
+
+  .punch-management-primary-button {
+    height: 50px;
+
+    border-radius: 11px;
+
+    font-size: 21px;
+  }
+
+  .punch-management-secondary-button {
+    min-width: 150px;
+    height: 40px;
+
+    border-radius: 10px;
+
+    font-size: 15px;
+  }
+
+  .punch-management-message {
+    min-height: 38px;
+
+    margin-top: 9px;
+    padding: 8px 10px;
+
+    border-radius: 9px;
+
+    font-size: 14px;
+  }
+
+  .punch-management-login-admin-text {
+    font-size: 14px;
+  }
+
+  .punch-management-search-wrap {
+    margin-top: 10px;
+  }
+
+  .punch-management-table-wrap {
+    max-height: 50vh;
+
+    margin-top: 9px;
+
+    border-radius: 10px;
+  }
+
+  .punch-management-table {
+    font-size: 14px;
+  }
+
+  .punch-management-table th,
+  .punch-management-table td {
+    padding: 7px 8px;
+  }
+
+  .punch-management-status {
+    min-width: 78px;
+
+    padding: 5px 8px;
+  }
+
+  .punch-management-row-button {
+    min-width: 76px;
+    height: 34px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 650px) {
+  .punch-management-card {
+    max-height: 96vh;
+  }
+
+  .punch-management-header {
+    min-height: 50px;
+  }
+
+  .punch-management-title {
+    font-size: 22px;
+  }
+
+  .punch-management-section {
+    padding: 10px;
+  }
+
+  .punch-management-section-title {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .punch-management-input {
+    height: 36px;
+    font-size: 16px;
+  }
+
+  .punch-management-primary-button {
+    height: 43px;
+    font-size: 18px;
+  }
+
+  .punch-management-table-wrap {
+    max-height: 46vh;
+  }
+}
+
+/* ==================================================
+   打刻管理 スタッフカルテ
+   ================================================== */
+
+.punch-management-detail-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: center;
+
+  margin-bottom: 18px;
+}
+
+.punch-management-detail-title-wrap {
+  min-width: 0;
+}
+
+.punch-management-detail-name {
+  font-size: 32px;
+  font-weight: 900;
+  color: #111111;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.punch-management-detail-code {
+  margin-top: 4px;
+
+  font-size: 17px;
+  font-weight: 800;
+  color: #555555;
+}
+
+.punch-management-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.punch-management-detail-card {
+  min-height: 94px;
+
+  padding: 15px 16px;
+
+  border: 2px solid #dddddd;
+  border-radius: 14px;
+
+  background: #ffffff;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.punch-management-detail-label {
+  font-size: 18px;
+  font-weight: 900;
+  color: #444444;
+
+  margin-bottom: 8px;
+}
+
+.punch-management-detail-status,
+.punch-management-detail-value {
+  min-height: 44px;
+
+  display: flex;
+  align-items: center;
+
+  font-size: 26px;
+  font-weight: 900;
+  color: #111111;
+}
+
+.punch-management-detail-status.status-before {
+  color: #6c757d;
+}
+
+.punch-management-detail-status.status-working {
+  color: #198754;
+}
+
+.punch-management-detail-status.status-away {
+  color: #b26a00;
+}
+
+.punch-management-detail-status.status-ended {
+  color: #343a40;
+}
+
+.punch-management-detail-status.status-forgot {
+  color: #d00000;
+}
+
+.punch-management-detail-block {
+  margin-top: 18px;
+}
+
+.punch-management-history-table {
+  min-width: 680px;
+}
+
+.punch-management-allowed-list {
+  min-height: 64px;
+
+  padding: 14px;
+
+  border: 2px solid #dddddd;
+  border-radius: 14px;
+
+  background: #ffffff;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.punch-management-allowed-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 90px;
+  min-height: 42px;
+
+  padding: 8px 14px;
+
+  border-radius: 999px;
+
+  color: #ffffff;
+
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.punch-management-allowed-chip.type-in {
+  background: #d00000;
+}
+
+.punch-management-allowed-chip.type-out {
+  background: #f28c28;
+}
+
+.punch-management-allowed-chip.type-goout,
+.punch-management-allowed-chip.type-back {
+  background: #0d6efd;
+}
+
+.punch-management-no-allowed {
+  color: #6c757d;
+
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.punch-management-detail-actions {
+  margin-top: 18px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.punch-management-detail-actions .punch-management-primary-button {
+  width: 100%;
+  margin-top: 0;
+}
+
+.punch-management-secondary-action-button {
+  min-height: 64px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: #6c757d;
+  color: #ffffff;
+
+  font-size: 20px;
+  font-weight: 900;
+
+  cursor: pointer;
+}
+
+.punch-management-secondary-action-button:disabled {
+  background: #adb5bd;
+  color: #eeeeee;
+
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+
+/* ==================================================
+   スタッフ一覧 行タップ対応
+   ================================================== */
+
+.punch-management-table tbody tr.punch-management-clickable-row {
+  cursor: pointer;
+}
+
+.punch-management-table tbody tr.punch-management-clickable-row:hover {
+  background: #ffe9a8;
+}
+
+.punch-management-table tbody tr.punch-management-clickable-row:active {
+  background: #ffd76a;
+}
+
+
+/* ==================================================
+   打刻管理 スタッフカルテ
+   Androidタブレット横向き対応
+   ================================================== */
+
+@media (orientation: landscape) and (max-width: 1280px),
+       (orientation: landscape) and (max-height: 760px) {
+  .punch-management-detail-header {
+    gap: 10px;
+    margin-bottom: 11px;
+  }
+
+  .punch-management-detail-name {
+    font-size: 24px;
+  }
+
+  .punch-management-detail-code {
+    font-size: 13px;
+  }
+
+  .punch-management-detail-grid {
+    gap: 9px;
+  }
+
+  .punch-management-detail-card {
+    min-height: 72px;
+
+    padding: 10px 12px;
+
+    border-radius: 10px;
+  }
+
+  .punch-management-detail-label {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+
+  .punch-management-detail-status,
+  .punch-management-detail-value {
+    min-height: 32px;
+    font-size: 20px;
+  }
+
+  .punch-management-detail-block {
+    margin-top: 11px;
+  }
+
+  .punch-management-allowed-list {
+    min-height: 50px;
+
+    padding: 9px;
+
+    border-radius: 10px;
+
+    gap: 7px;
+  }
+
+  .punch-management-allowed-chip {
+    min-width: 72px;
+    min-height: 34px;
+
+    padding: 6px 10px;
+
+    font-size: 14px;
+  }
+
+  .punch-management-no-allowed {
+    font-size: 14px;
+  }
+
+  .punch-management-detail-actions {
+    margin-top: 11px;
+
+    gap: 8px;
+  }
+
+  .punch-management-secondary-action-button {
+    min-height: 50px;
+
+    border-radius: 11px;
+
+    font-size: 16px;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 650px) {
+  .punch-management-detail-name {
+    font-size: 21px;
+  }
+
+  .punch-management-detail-card {
+    min-height: 62px;
+    padding: 8px 10px;
+  }
+
+  .punch-management-detail-status,
+  .punch-management-detail-value {
+    min-height: 28px;
+    font-size: 18px;
+  }
+
+  .punch-management-detail-actions {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .punch-management-secondary-action-button {
+    min-height: 44px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 760px) {
+  .punch-management-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .punch-management-detail-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .punch-management-history-table {
+    min-width: 560px;
+  }
+}
+
+/* ==================================================
+   管理者打刻追加 入力画面
+   ================================================== */
+
+.manual-punch-form {
+  display: grid;
+  gap: 16px;
+}
+
+.manual-punch-form-row {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 14px;
+  align-items: center;
+}
+
+.manual-punch-form-row label {
+  font-size: 21px;
+  font-weight: 900;
+  color: #222222;
+}
+
+.manual-punch-date-time-row {
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.manual-punch-date-time-row > div {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.manual-punch-optional {
+  font-size: 15px;
+  font-weight: 700;
+  color: #6c757d;
+}
+
+.manual-punch-textarea {
+  width: 100%;
+  min-height: 92px;
+
+  resize: vertical;
+
+  border: 3px solid #bbbbbb;
+  border-radius: 12px;
+
+  padding: 12px 14px;
+
+  background: #ffffff;
+  color: #111111;
+
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.manual-punch-textarea:focus {
+  outline: none;
+  border-color: #c9a349;
+  box-shadow: 0 0 0 4px rgba(201, 163, 73, 0.22);
+}
+
+.manual-punch-action-row {
+  margin-top: 4px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.manual-punch-action-row .punch-management-primary-button,
+.manual-punch-action-row .punch-management-secondary-action-button {
+  width: 100%;
+  margin-top: 0;
+}
+
+
+/* ==================================================
+   管理者打刻追加 確認画面
+   ================================================== */
+
+.manual-punch-confirm-card {
+  display: grid;
+  gap: 0;
+
+  overflow: hidden;
+
+  border: 3px solid #d7d7d7;
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.1);
+}
+
+.manual-punch-confirm-row {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 0;
+
+  border-bottom: 1px solid #d7d7d7;
+}
+
+.manual-punch-confirm-row:last-child {
+  border-bottom: none;
+}
+
+.manual-punch-confirm-label {
+  padding: 15px 16px;
+
+  display: flex;
+  align-items: center;
+
+  background: #f1f3f5;
+  color: #222222;
+
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.manual-punch-confirm-value {
+  min-height: 56px;
+
+  padding: 15px 16px;
+
+  display: flex;
+  align-items: center;
+
+  color: #111111;
+
+  font-size: 21px;
+  font-weight: 900;
+
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+
+/* ==================================================
+   保存中表示
+   ================================================== */
+
+#btnExecuteManualPunchAdd:disabled,
+#btnConfirmManualPunchAdd:disabled {
+  background: #adb5bd;
+  color: #eeeeee;
+  cursor: wait;
+  box-shadow: none;
+}
+
+
+/* ==================================================
+   管理者打刻追加
+   Androidタブレット横向き対応
+   ================================================== */
+
+@media (orientation: landscape) and (max-width: 1280px),
+       (orientation: landscape) and (max-height: 760px) {
+  .manual-punch-form {
+    gap: 10px;
+  }
+
+  .manual-punch-form-row {
+    grid-template-columns: 145px 1fr;
+    gap: 10px;
+  }
+
+  .manual-punch-form-row label {
+    font-size: 16px;
+  }
+
+  .manual-punch-date-time-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .manual-punch-date-time-row > div {
+    grid-template-columns: 88px 1fr;
+    gap: 7px;
+  }
+
+  .manual-punch-optional {
+    font-size: 12px;
+  }
+
+  .manual-punch-textarea {
+    min-height: 66px;
+
+    border-width: 2px;
+    border-radius: 9px;
+
+    padding: 8px 10px;
+
+    font-size: 15px;
+  }
+
+  .manual-punch-action-row {
+    gap: 9px;
+  }
+
+  .manual-punch-confirm-card {
+    border-width: 2px;
+    border-radius: 11px;
+  }
+
+  .manual-punch-confirm-row {
+    grid-template-columns: 145px 1fr;
+  }
+
+  .manual-punch-confirm-label {
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+
+  .manual-punch-confirm-value {
+    min-height: 42px;
+
+    padding: 10px 12px;
+
+    font-size: 16px;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 650px) {
+  .manual-punch-form {
+    gap: 8px;
+  }
+
+  .manual-punch-form-row {
+    grid-template-columns: 125px 1fr;
+    gap: 8px;
+  }
+
+  .manual-punch-form-row label {
+    font-size: 14px;
+  }
+
+  .manual-punch-date-time-row > div {
+    grid-template-columns: 72px 1fr;
+  }
+
+  .manual-punch-textarea {
+    min-height: 52px;
+    font-size: 14px;
+  }
+
+  .manual-punch-confirm-row {
+    grid-template-columns: 125px 1fr;
+  }
+
+  .manual-punch-confirm-label,
+  .manual-punch-confirm-value {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+
+  .manual-punch-confirm-value {
+    min-height: 36px;
+  }
+}
+
+@media (max-width: 760px) {
+  .manual-punch-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .manual-punch-date-time-row {
+    grid-template-columns: 1fr;
+  }
+
+  .manual-punch-date-time-row > div {
+    grid-template-columns: 1fr;
+  }
+
+  .manual-punch-action-row {
+    grid-template-columns: 1fr;
+  }
+
+  .manual-punch-confirm-row {
+    grid-template-columns: 1fr;
+  }
+
+  .manual-punch-confirm-label {
+    border-bottom: 1px solid #d7d7d7;
+  }
+}

@@ -210,7 +210,12 @@
             Reload
           </button>
 
-          <button class="utility-button blank-utility-button" type="button" disabled>
+          <button
+            id="btnPunchManagement"
+            class="utility-button punch-management-button"
+            type="button"
+          >
+            打刻管理
           </button>
 
           <button class="utility-button blank-utility-button" type="button" disabled>
@@ -273,8 +278,7 @@
 
   <!-- =========================================
        退勤打刻忘れ 警告モーダル
-       既存画面の上に重ねて表示するため、
-       ボタン位置や画面配置は変更しない
+       既存画面の上に重ねて表示
        ========================================= -->
   <div id="forgotClockOutModal" class="forgot-clockout-modal hidden">
     <div class="forgot-clockout-box">
@@ -299,6 +303,406 @@
       >
         OK
       </button>
+
+    </div>
+  </div>
+
+
+  <!-- =========================================
+       打刻管理モーダル
+       第1段階：
+       ・管理者認証
+       ・有効スタッフ一覧
+       ・名前検索
+       ========================================= -->
+  <div id="punchManagementModal" class="punch-management-modal hidden">
+    <div class="punch-management-card">
+
+      <div class="punch-management-header">
+        <div class="punch-management-title">打刻管理</div>
+
+        <button
+          id="btnClosePunchManagement"
+          class="punch-management-close-button"
+          type="button"
+          aria-label="打刻管理を閉じる"
+        >
+          ×
+        </button>
+      </div>
+
+      <!-- 管理者認証エリア -->
+      <section id="punchManagementLoginArea" class="punch-management-section">
+        <div class="punch-management-section-title">管理者認証</div>
+
+        <div class="punch-management-form-row">
+          <label for="punchManagementAdminId">管理者ID</label>
+          <input
+            id="punchManagementAdminId"
+            class="punch-management-input"
+            type="text"
+            autocomplete="off"
+            inputmode="text"
+          >
+        </div>
+
+        <div class="punch-management-form-row">
+          <label for="punchManagementAdminPw">管理者PW</label>
+          <input
+            id="punchManagementAdminPw"
+            class="punch-management-input"
+            type="password"
+            autocomplete="off"
+            inputmode="numeric"
+          >
+        </div>
+
+        <button
+          id="btnPunchManagementLogin"
+          class="punch-management-primary-button"
+          type="button"
+        >
+          ログイン
+        </button>
+
+        <div id="punchManagementLoginMessage" class="punch-management-message">
+          管理者IDとPWを入力してください。
+        </div>
+      </section>
+
+      <!-- スタッフ一覧エリア -->
+      <section id="punchManagementStaffArea" class="punch-management-section hidden">
+        <div class="punch-management-toolbar">
+          <div>
+            <div class="punch-management-section-title">有効スタッフの現状一覧</div>
+            <div id="punchManagementLoginAdminText" class="punch-management-login-admin-text">
+              管理者：未確認
+            </div>
+          </div>
+
+          <button
+            id="btnPunchManagementLogout"
+            class="punch-management-secondary-button"
+            type="button"
+          >
+            管理者ログアウト
+          </button>
+        </div>
+
+        <div class="punch-management-search-wrap">
+          <label for="punchManagementStaffSearch">スタッフ名検索</label>
+          <input
+            id="punchManagementStaffSearch"
+            class="punch-management-input"
+            type="search"
+            autocomplete="off"
+            placeholder="1文字から検索できます"
+          >
+        </div>
+
+        <div id="punchManagementListMessage" class="punch-management-message">
+          スタッフ一覧を取得します。
+        </div>
+
+        <div class="punch-management-table-wrap">
+          <table class="punch-management-table">
+            <thead>
+              <tr>
+                <th>スタッフ名</th>
+                <th>現在状態</th>
+                <th>最新打刻</th>
+                <th>最新日時</th>
+                <th>営業日</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="punchManagementStaffList">
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- スタッフカルテエリア -->
+      <section id="punchManagementDetailArea" class="punch-management-section hidden">
+        <div class="punch-management-detail-header">
+          <button
+            id="btnBackToPunchManagementList"
+            class="punch-management-secondary-button"
+            type="button"
+          >
+            一覧へ戻る
+          </button>
+
+          <div class="punch-management-detail-title-wrap">
+            <div id="punchManagementDetailStaffName" class="punch-management-detail-name">
+              未選択
+            </div>
+            <div id="punchManagementDetailStaffCode" class="punch-management-detail-code">
+              ID：-
+            </div>
+          </div>
+        </div>
+
+        <div class="punch-management-detail-grid">
+
+          <div class="punch-management-detail-card">
+            <div class="punch-management-detail-label">現在状態</div>
+            <div id="punchManagementDetailStatus" class="punch-management-detail-status">
+              未確認
+            </div>
+          </div>
+
+          <div class="punch-management-detail-card">
+            <div class="punch-management-detail-label">営業日</div>
+            <div id="punchManagementDetailBusinessDate" class="punch-management-detail-value">
+              -
+            </div>
+          </div>
+
+        </div>
+
+        <div class="punch-management-detail-block">
+          <div class="punch-management-section-title">最新打刻履歴（5件）</div>
+
+          <div class="punch-management-table-wrap">
+            <table class="punch-management-table punch-management-history-table">
+              <thead>
+                <tr>
+                  <th>打刻日時</th>
+                  <th>営業日</th>
+                  <th>表示時刻</th>
+                  <th>打刻種別</th>
+                </tr>
+              </thead>
+              <tbody id="punchManagementRecentHistory">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="punch-management-detail-block">
+          <div class="punch-management-section-title">追加可能な打刻</div>
+
+          <div id="punchManagementAllowedPunchTypes" class="punch-management-allowed-list">
+            未確認
+          </div>
+        </div>
+
+        <div class="punch-management-detail-actions">
+          <button
+            id="btnOpenManualPunchAdd"
+            class="punch-management-primary-button"
+            type="button"
+          >
+            打刻追加
+          </button>
+
+          <button
+            id="btnOpenPunchTimeEdit"
+            class="punch-management-secondary-action-button"
+            type="button"
+            disabled
+          >
+            時間修正（準備中）
+          </button>
+
+          <button
+            id="btnOpenPunchHistory"
+            class="punch-management-secondary-action-button"
+            type="button"
+            disabled
+          >
+            修正履歴（準備中）
+          </button>
+        </div>
+
+        <div id="punchManagementDetailMessage" class="punch-management-message">
+          スタッフの状態と最新履歴を確認してください。
+        </div>
+      </section>
+
+      <!-- 打刻追加入力エリア -->
+      <section id="manualPunchAddArea" class="punch-management-section hidden">
+        <div class="punch-management-detail-header">
+          <button
+            id="btnBackToPunchManagementDetail"
+            class="punch-management-secondary-button"
+            type="button"
+          >
+            スタッフカルテへ戻る
+          </button>
+
+          <div class="punch-management-detail-title-wrap">
+            <div class="punch-management-detail-name">
+              打刻追加
+            </div>
+            <div id="manualPunchTargetStaffText" class="punch-management-detail-code">
+              対象スタッフ：未選択
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-punch-form">
+
+          <div class="manual-punch-form-row">
+            <label for="manualPunchType">追加する打刻</label>
+            <select
+              id="manualPunchType"
+              class="punch-management-input"
+            >
+              <option value="">選択してください</option>
+            </select>
+          </div>
+
+          <div class="manual-punch-form-row manual-punch-date-time-row">
+            <div>
+              <label for="manualPunchDate">打刻日</label>
+              <input
+                id="manualPunchDate"
+                class="punch-management-input"
+                type="date"
+              >
+            </div>
+
+            <div>
+              <label for="manualPunchTime">打刻時刻</label>
+              <input
+                id="manualPunchTime"
+                class="punch-management-input"
+                type="time"
+              >
+            </div>
+          </div>
+
+          <div class="manual-punch-form-row">
+            <label for="manualPunchReason">追加理由</label>
+            <select
+              id="manualPunchReason"
+              class="punch-management-input"
+            >
+              <option value="">選択してください</option>
+              <option value="出勤打刻忘れ">出勤打刻忘れ</option>
+              <option value="退勤打刻忘れ">退勤打刻忘れ</option>
+              <option value="外出打刻忘れ">外出打刻忘れ</option>
+              <option value="戻り打刻忘れ">戻り打刻忘れ</option>
+              <option value="打刻時間間違い">打刻時間間違い</option>
+              <option value="管理者確認による追加">管理者確認による追加</option>
+              <option value="その他">その他</option>
+            </select>
+          </div>
+
+          <div class="manual-punch-form-row">
+            <label for="manualPunchMemo">
+              補足メモ
+              <span class="manual-punch-optional">（任意）</span>
+            </label>
+            <textarea
+              id="manualPunchMemo"
+              class="manual-punch-textarea"
+              rows="3"
+              maxlength="200"
+              placeholder="必要な場合のみ入力してください"
+            ></textarea>
+          </div>
+
+          <div id="manualPunchFormMessage" class="punch-management-message">
+            内容を入力してください。
+          </div>
+
+          <div class="manual-punch-action-row">
+            <button
+              id="btnCancelManualPunchAdd"
+              class="punch-management-secondary-action-button"
+              type="button"
+            >
+              キャンセル
+            </button>
+
+            <button
+              id="btnConfirmManualPunchAdd"
+              class="punch-management-primary-button"
+              type="button"
+            >
+              内容確認
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- 打刻追加 確認エリア -->
+      <section id="manualPunchConfirmArea" class="punch-management-section hidden">
+        <div class="punch-management-detail-header">
+          <button
+            id="btnBackToManualPunchForm"
+            class="punch-management-secondary-button"
+            type="button"
+          >
+            入力画面へ戻る
+          </button>
+
+          <div class="punch-management-detail-title-wrap">
+            <div class="punch-management-detail-name">
+              打刻追加内容の確認
+            </div>
+            <div class="punch-management-detail-code">
+              内容を確認してから追加実行してください。
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-punch-confirm-card">
+
+          <div class="manual-punch-confirm-row">
+            <div class="manual-punch-confirm-label">スタッフ</div>
+            <div id="manualPunchConfirmStaff" class="manual-punch-confirm-value">-</div>
+          </div>
+
+          <div class="manual-punch-confirm-row">
+            <div class="manual-punch-confirm-label">追加打刻</div>
+            <div id="manualPunchConfirmType" class="manual-punch-confirm-value">-</div>
+          </div>
+
+          <div class="manual-punch-confirm-row">
+            <div class="manual-punch-confirm-label">打刻日時</div>
+            <div id="manualPunchConfirmDateTime" class="manual-punch-confirm-value">-</div>
+          </div>
+
+          <div class="manual-punch-confirm-row">
+            <div class="manual-punch-confirm-label">理由</div>
+            <div id="manualPunchConfirmReason" class="manual-punch-confirm-value">-</div>
+          </div>
+
+          <div class="manual-punch-confirm-row">
+            <div class="manual-punch-confirm-label">補足メモ</div>
+            <div id="manualPunchConfirmMemo" class="manual-punch-confirm-value">-</div>
+          </div>
+
+        </div>
+
+        <div id="manualPunchConfirmMessage" class="punch-management-message warning">
+          保存後は打刻Dataと修正履歴に記録されます。
+        </div>
+
+        <div class="manual-punch-action-row">
+          <button
+            id="btnCancelManualPunchConfirm"
+            class="punch-management-secondary-action-button"
+            type="button"
+          >
+            キャンセル
+          </button>
+
+          <button
+            id="btnExecuteManualPunchAdd"
+            class="punch-management-primary-button"
+            type="button"
+          >
+            追加実行
+          </button>
+        </div>
+      </section>
 
     </div>
   </div>

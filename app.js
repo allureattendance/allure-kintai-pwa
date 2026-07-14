@@ -66,6 +66,18 @@ let isSavingPunch = false;
 
 
 /* ==================================================
+   打刻管理 共通状態
+   ================================================== */
+
+let punchManagementAdminId = "";
+let punchManagementAdminPw = "";
+let punchManagementAdminName = "";
+let punchManagementAdminRole = "";
+let punchManagementStaffList = [];
+let punchManagementSelectedStaff = null;
+
+
+/* ==================================================
    起動処理
    ================================================== */
 
@@ -78,6 +90,7 @@ window.addEventListener("DOMContentLoaded", async function () {
   setupPunchButtons();
   setupPhotoModal();
   setupForgotClockOutModal();
+  setupPunchManagement();
   setupAdminButton();
   setupReloadButton();
   setupResumeReload();
@@ -1331,6 +1344,1126 @@ function hideForgotClockOutModal() {
   }
 
   modal.classList.add("hidden");
+}
+
+
+/* ==================================================
+   打刻管理
+   第1段階：
+   ・管理者認証
+   ・有効スタッフの現状一覧
+   ・名前検索による絞り込み
+   ================================================== */
+
+function setupPunchManagement() {
+  const openButton = document.getElementById("btnPunchManagement");
+  const closeButton = document.getElementById("btnClosePunchManagement");
+  const loginButton = document.getElementById("btnPunchManagementLogin");
+  const logoutButton = document.getElementById("btnPunchManagementLogout");
+  const adminIdInput = document.getElementById("punchManagementAdminId");
+  const adminPwInput = document.getElementById("punchManagementAdminPw");
+  const searchInput = document.getElementById("punchManagementStaffSearch");
+  const backToListButton = document.getElementById("btnBackToPunchManagementList");
+  const manualPunchAddButton = document.getElementById("btnOpenManualPunchAdd");
+  const backToDetailButton = document.getElementById("btnBackToPunchManagementDetail");
+  const cancelManualAddButton = document.getElementById("btnCancelManualPunchAdd");
+  const confirmManualAddButton = document.getElementById("btnConfirmManualPunchAdd");
+  const backToManualFormButton = document.getElementById("btnBackToManualPunchForm");
+  const cancelManualConfirmButton = document.getElementById("btnCancelManualPunchConfirm");
+  const executeManualAddButton = document.getElementById("btnExecuteManualPunchAdd");
+  const manualPunchType = document.getElementById("manualPunchType");
+
+  if (openButton) {
+    openButton.addEventListener("click", openPunchManagement);
+  }
+
+  if (closeButton) {
+    closeButton.addEventListener("click", closePunchManagement);
+  }
+
+  if (loginButton) {
+    loginButton.addEventListener("click", loginPunchManagement);
+  }
+
+  if (logoutButton) {
+    logoutButton.addEventListener("click", logoutPunchManagement);
+  }
+
+  if (adminIdInput) {
+    adminIdInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" || event.key === "Tab") {
+        event.preventDefault();
+
+        if (adminPwInput) {
+          adminPwInput.focus();
+        }
+      }
+    });
+  }
+
+  if (adminPwInput) {
+    adminPwInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        loginPunchManagement();
+      }
+    });
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener("input", filterPunchManagementStaffList);
+  }
+
+  if (backToListButton) {
+    backToListButton.addEventListener("click", showPunchManagementStaffArea);
+  }
+
+  if (manualPunchAddButton) {
+    manualPunchAddButton.addEventListener("click", openManualPunchAddArea);
+  }
+
+  if (backToDetailButton) {
+    backToDetailButton.addEventListener("click", showSelectedPunchManagementDetail);
+  }
+
+  if (cancelManualAddButton) {
+    cancelManualAddButton.addEventListener("click", showSelectedPunchManagementDetail);
+  }
+
+  if (confirmManualAddButton) {
+    confirmManualAddButton.addEventListener("click", showManualPunchConfirmArea);
+  }
+
+  if (backToManualFormButton) {
+    backToManualFormButton.addEventListener("click", showManualPunchAddArea);
+  }
+
+  if (cancelManualConfirmButton) {
+    cancelManualConfirmButton.addEventListener("click", showManualPunchAddArea);
+  }
+
+  if (executeManualAddButton) {
+    executeManualAddButton.addEventListener("click", executeManualPunchAdd);
+  }
+
+  if (manualPunchType) {
+    manualPunchType.addEventListener("change", applyManualPunchReasonSuggestion);
+  }
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key !== "Escape") {
+      return;
+    }
+
+    const modal = document.getElementById("punchManagementModal");
+
+    if (modal && !modal.classList.contains("hidden")) {
+      closePunchManagement();
+    }
+  });
+}
+
+
+function openPunchManagement() {
+  const modal = document.getElementById("punchManagementModal");
+
+  if (!modal) {
+    showMainMessage("打刻管理画面が見つかりません", "error");
+    return;
+  }
+
+  resetPunchManagement();
+  modal.classList.remove("hidden");
+
+  const adminIdInput = document.getElementById("punchManagementAdminId");
+
+  setTimeout(function () {
+    if (adminIdInput) {
+      adminIdInput.focus();
+    }
+  }, 50);
+}
+
+
+function closePunchManagement() {
+  const modal = document.getElementById("punchManagementModal");
+
+  if (modal) {
+    modal.classList.add("hidden");
+  }
+
+  resetPunchManagement();
+}
+
+
+function resetPunchManagement() {
+  punchManagementAdminId = "";
+  punchManagementAdminPw = "";
+  punchManagementAdminName = "";
+  punchManagementAdminRole = "";
+  punchManagementStaffList = [];
+  punchManagementSelectedStaff = null;
+
+  const loginArea = document.getElementById("punchManagementLoginArea");
+  const staffArea = document.getElementById("punchManagementStaffArea");
+  const adminIdInput = document.getElementById("punchManagementAdminId");
+  const adminPwInput = document.getElementById("punchManagementAdminPw");
+  const searchInput = document.getElementById("punchManagementStaffSearch");
+  const loginButton = document.getElementById("btnPunchManagementLogin");
+  const loginAdminText = document.getElementById("punchManagementLoginAdminText");
+  const listBody = document.getElementById("punchManagementStaffList");
+  const detailArea = document.getElementById("punchManagementDetailArea");
+  const manualAddArea = document.getElementById("manualPunchAddArea");
+  const manualConfirmArea = document.getElementById("manualPunchConfirmArea");
+
+  if (loginArea) loginArea.classList.remove("hidden");
+  if (staffArea) staffArea.classList.add("hidden");
+  if (detailArea) detailArea.classList.add("hidden");
+  if (manualAddArea) manualAddArea.classList.add("hidden");
+  if (manualConfirmArea) manualConfirmArea.classList.add("hidden");
+  if (adminIdInput) adminIdInput.value = "";
+  if (adminPwInput) adminPwInput.value = "";
+  if (searchInput) searchInput.value = "";
+
+  if (loginButton) {
+    loginButton.disabled = false;
+    loginButton.textContent = "ログイン";
+  }
+
+  if (loginAdminText) {
+    loginAdminText.textContent = "管理者：未確認";
+  }
+
+  if (listBody) {
+    listBody.innerHTML = "";
+  }
+
+  showPunchManagementLoginMessage(
+    "管理者IDとPWを入力してください。",
+    ""
+  );
+
+  showPunchManagementListMessage(
+    "スタッフ一覧を取得します。",
+    ""
+  );
+}
+
+
+async function loginPunchManagement() {
+  const adminIdInput = document.getElementById("punchManagementAdminId");
+  const adminPwInput = document.getElementById("punchManagementAdminPw");
+  const loginButton = document.getElementById("btnPunchManagementLogin");
+
+  const adminId = adminIdInput ? adminIdInput.value.trim() : "";
+  const adminPw = adminPwInput ? adminPwInput.value.trim() : "";
+
+  if (!adminId) {
+    showPunchManagementLoginMessage(
+      "管理者IDを入力してください。",
+      "warning"
+    );
+
+    if (adminIdInput) adminIdInput.focus();
+    return;
+  }
+
+  if (!adminPw) {
+    showPunchManagementLoginMessage(
+      "管理者PWを入力してください。",
+      "warning"
+    );
+
+    if (adminPwInput) adminPwInput.focus();
+    return;
+  }
+
+  if (!isGasUrlSet()) return;
+
+  if (loginButton) {
+    loginButton.disabled = true;
+    loginButton.textContent = "確認中...";
+  }
+
+  showPunchManagementLoginMessage(
+    "管理者認証とスタッフ一覧取得中...",
+    ""
+  );
+
+  try {
+    const response = await fetch(GAS_API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "getForgotPunchList",
+        loginAdminId: adminId,
+        loginAdminPw: adminPw
+      })
+    });
+
+    const data = await response.json();
+
+    if (!data.success) {
+      if (loginButton) {
+        loginButton.disabled = false;
+        loginButton.textContent = "ログイン";
+      }
+
+      showPunchManagementLoginMessage(
+        data.message || "管理者認証に失敗しました。",
+        "error"
+      );
+
+      return;
+    }
+
+    punchManagementAdminId = data.adminId || adminId;
+    punchManagementAdminPw = adminPw;
+    punchManagementAdminName = data.adminName || "";
+    punchManagementAdminRole = data.adminRole || "";
+    punchManagementStaffList = Array.isArray(data.staffList)
+      ? data.staffList
+      : [];
+
+    showPunchManagementStaffArea();
+
+  } catch (error) {
+    console.error("打刻管理一覧取得エラー:", error);
+
+    sendErrorLog(
+      "打刻管理一覧取得エラー",
+      "管理者認証またはスタッフ一覧の取得に失敗しました",
+      "loginPunchManagement",
+      error && error.message ? error.message : String(error)
+    );
+
+    if (loginButton) {
+      loginButton.disabled = false;
+      loginButton.textContent = "ログイン";
+    }
+
+    showPunchManagementLoginMessage(
+      "管理者認証またはスタッフ一覧の取得中にエラーが発生しました。",
+      "error"
+    );
+  }
+}
+
+
+function logoutPunchManagement() {
+  resetPunchManagement();
+
+  const adminIdInput = document.getElementById("punchManagementAdminId");
+
+  setTimeout(function () {
+    if (adminIdInput) {
+      adminIdInput.focus();
+    }
+  }, 50);
+}
+
+
+function showPunchManagementStaffArea() {
+  const loginArea = document.getElementById("punchManagementLoginArea");
+  const staffArea = document.getElementById("punchManagementStaffArea");
+  const detailArea = document.getElementById("punchManagementDetailArea");
+  const manualAddArea = document.getElementById("manualPunchAddArea");
+  const manualConfirmArea = document.getElementById("manualPunchConfirmArea");
+  const loginAdminText = document.getElementById("punchManagementLoginAdminText");
+  const searchInput = document.getElementById("punchManagementStaffSearch");
+
+  if (loginArea) loginArea.classList.add("hidden");
+  if (staffArea) staffArea.classList.remove("hidden");
+  if (detailArea) detailArea.classList.add("hidden");
+  if (manualAddArea) manualAddArea.classList.add("hidden");
+  if (manualConfirmArea) manualConfirmArea.classList.add("hidden");
+
+  if (loginAdminText) {
+    const roleText =
+      punchManagementAdminRole === "main"
+        ? "Main管理者"
+        : punchManagementAdminRole === "admin"
+          ? "管理者"
+          : punchManagementAdminRole || "権限未確認";
+
+    loginAdminText.textContent =
+      "管理者：" +
+      (punchManagementAdminName || punchManagementAdminId) +
+      "（" +
+      roleText +
+      "）";
+  }
+
+  if (searchInput) {
+    searchInput.value = "";
+  }
+
+  renderPunchManagementStaffList(punchManagementStaffList);
+
+  if (searchInput) {
+    setTimeout(function () {
+      searchInput.focus();
+    }, 50);
+  }
+}
+
+
+function filterPunchManagementStaffList() {
+  const searchInput = document.getElementById("punchManagementStaffSearch");
+
+  const keyword = normalizePunchManagementSearchText(
+    searchInput ? searchInput.value : ""
+  );
+
+  if (!keyword) {
+    renderPunchManagementStaffList(punchManagementStaffList);
+    return;
+  }
+
+  const filteredList = punchManagementStaffList.filter(function (staff) {
+    const name = normalizePunchManagementSearchText(staff.staffName || "");
+    return name.includes(keyword);
+  });
+
+  renderPunchManagementStaffList(filteredList);
+}
+
+
+function normalizePunchManagementSearchText(value) {
+  return String(value || "")
+    .trim()
+    .toLocaleLowerCase("ja-JP")
+    .normalize("NFKC");
+}
+
+
+function renderPunchManagementStaffList(staffList) {
+  const listBody = document.getElementById("punchManagementStaffList");
+
+  if (!listBody) return;
+
+  if (!Array.isArray(staffList) || staffList.length === 0) {
+    listBody.innerHTML = "";
+
+    showPunchManagementListMessage(
+      "該当する有効スタッフはいません。",
+      "warning"
+    );
+
+    return;
+  }
+
+  const rowsHtml = staffList.map(function (item) {
+    const currentStatus = String(item.currentStatus || "未確認").trim();
+
+    const statusClass = getPunchManagementStatusClass(
+      currentStatus,
+      item.forgotClockOut === true
+    );
+
+    return `
+      <tr
+        class="punch-management-clickable-row"
+        tabindex="0"
+        data-staff-code="${escapePunchManagementHtml(item.staffCode || "")}"
+      >
+        <td>${escapePunchManagementHtml(item.staffName || "")}</td>
+        <td>
+          <span class="punch-management-status ${statusClass}">
+            ${escapePunchManagementHtml(currentStatus)}
+          </span>
+        </td>
+        <td>${escapePunchManagementHtml(item.latestPunchType || "")}</td>
+        <td>${escapePunchManagementHtml(item.latestRecordedAt || "")}</td>
+        <td>${escapePunchManagementHtml(item.latestBusinessDate || "")}</td>
+        <td>
+          <button
+            class="punch-management-row-button"
+            type="button"
+            data-staff-code="${escapePunchManagementHtml(item.staffCode || "")}"
+          >
+            開く
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join("");
+
+  listBody.innerHTML = rowsHtml;
+
+  showPunchManagementListMessage(
+    "表示中：" + staffList.length + "名。スタッフ行を押してください。",
+    "success"
+  );
+
+  setupPunchManagementRowEvents();
+}
+
+
+function getPunchManagementStatusClass(currentStatus, forgotClockOut) {
+  if (forgotClockOut || currentStatus.includes("退勤忘れ")) {
+    return "status-forgot";
+  }
+
+  if (currentStatus === "出勤中") {
+    return "status-working";
+  }
+
+  if (currentStatus === "外出中") {
+    return "status-away";
+  }
+
+  if (currentStatus === "退勤済み") {
+    return "status-ended";
+  }
+
+  return "status-before";
+}
+
+
+function setupPunchManagementRowEvents() {
+  const rows = document.querySelectorAll(".punch-management-clickable-row");
+  const buttons = document.querySelectorAll(".punch-management-row-button");
+
+  rows.forEach(function (row) {
+    row.addEventListener("click", function (event) {
+      if (event.target.closest(".punch-management-row-button")) {
+        return;
+      }
+
+      openPunchManagementDetail(row.dataset.staffCode || "");
+    });
+
+    row.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openPunchManagementDetail(row.dataset.staffCode || "");
+      }
+    });
+  });
+
+  buttons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      openPunchManagementDetail(button.dataset.staffCode || "");
+    });
+  });
+}
+
+
+function openPunchManagementDetail(staffCode) {
+  const staff = punchManagementStaffList.find(function (item) {
+    return String(item.staffCode || "") === String(staffCode || "");
+  });
+
+  if (!staff) {
+    showPunchManagementListMessage(
+      "対象スタッフの情報が見つかりません。",
+      "error"
+    );
+    return;
+  }
+
+  punchManagementSelectedStaff = staff;
+
+  const staffArea = document.getElementById("punchManagementStaffArea");
+  const detailArea = document.getElementById("punchManagementDetailArea");
+  const manualAddArea = document.getElementById("manualPunchAddArea");
+  const manualConfirmArea = document.getElementById("manualPunchConfirmArea");
+
+  if (staffArea) staffArea.classList.add("hidden");
+  if (detailArea) detailArea.classList.remove("hidden");
+  if (manualAddArea) manualAddArea.classList.add("hidden");
+  if (manualConfirmArea) manualConfirmArea.classList.add("hidden");
+
+  renderPunchManagementDetail(staff);
+}
+
+
+function renderPunchManagementDetail(staff) {
+  const nameEl = document.getElementById("punchManagementDetailStaffName");
+  const codeEl = document.getElementById("punchManagementDetailStaffCode");
+  const statusEl = document.getElementById("punchManagementDetailStatus");
+  const businessDateEl = document.getElementById("punchManagementDetailBusinessDate");
+  const addButton = document.getElementById("btnOpenManualPunchAdd");
+
+  if (nameEl) {
+    nameEl.textContent = staff.staffName || "未設定";
+  }
+
+  if (codeEl) {
+    codeEl.textContent = "ID：" + (staff.staffCode || "-");
+  }
+
+  if (statusEl) {
+    const currentStatus = String(staff.currentStatus || "未確認").trim();
+
+    statusEl.textContent = currentStatus;
+    statusEl.classList.remove(
+      "status-before",
+      "status-working",
+      "status-away",
+      "status-ended",
+      "status-forgot"
+    );
+
+    statusEl.classList.add(
+      getPunchManagementStatusClass(
+        currentStatus,
+        staff.forgotClockOut === true
+      )
+    );
+  }
+
+  if (businessDateEl) {
+    businessDateEl.textContent = staff.latestBusinessDate || "-";
+  }
+
+  renderPunchManagementRecentHistory(
+    Array.isArray(staff.recentPunchList)
+      ? staff.recentPunchList
+      : []
+  );
+
+  const allowedPunchTypes = Array.isArray(staff.allowedPunchTypes)
+    ? staff.allowedPunchTypes
+    : [];
+
+  renderPunchManagementAllowedTypes(allowedPunchTypes);
+
+  if (addButton) {
+    addButton.disabled = allowedPunchTypes.length === 0;
+    addButton.textContent =
+      allowedPunchTypes.length > 0
+        ? "打刻追加"
+        : "追加可能な打刻なし";
+  }
+
+  showPunchManagementDetailMessage(
+    "スタッフの状態と最新履歴を確認してください。",
+    ""
+  );
+}
+
+
+function renderPunchManagementRecentHistory(historyList) {
+  const historyBody = document.getElementById("punchManagementRecentHistory");
+
+  if (!historyBody) return;
+
+  if (!historyList.length) {
+    historyBody.innerHTML = `
+      <tr>
+        <td colspan="4">打刻履歴はありません。</td>
+      </tr>
+    `;
+    return;
+  }
+
+  historyBody.innerHTML = historyList.map(function (item) {
+    return `
+      <tr>
+        <td>${escapePunchManagementHtml(item.recordedAt || "")}</td>
+        <td>${escapePunchManagementHtml(item.businessDate || "")}</td>
+        <td>${escapePunchManagementHtml(item.displayTime || "")}</td>
+        <td>${escapePunchManagementHtml(item.punchType || "")}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+
+function renderPunchManagementAllowedTypes(allowedPunchTypes) {
+  const allowedListEl = document.getElementById("punchManagementAllowedPunchTypes");
+
+  if (!allowedListEl) return;
+
+  if (!allowedPunchTypes.length) {
+    allowedListEl.innerHTML = `
+      <span class="punch-management-no-allowed">
+        現在追加できる打刻はありません。
+      </span>
+    `;
+    return;
+  }
+
+  allowedListEl.innerHTML = allowedPunchTypes.map(function (punchType) {
+    return `
+      <span class="punch-management-allowed-chip ${getPunchManagementTypeClass(punchType)}">
+        ${escapePunchManagementHtml(punchType)}
+      </span>
+    `;
+  }).join("");
+}
+
+
+function getPunchManagementTypeClass(punchType) {
+  if (punchType === "出勤") return "type-in";
+  if (punchType === "退勤") return "type-out";
+  if (punchType === "外出") return "type-goout";
+  if (punchType === "戻り") return "type-back";
+  return "";
+}
+
+
+function showSelectedPunchManagementDetail() {
+  if (!punchManagementSelectedStaff) {
+    showPunchManagementStaffArea();
+    return;
+  }
+
+  openPunchManagementDetail(
+    punchManagementSelectedStaff.staffCode || ""
+  );
+}
+
+
+function openManualPunchAddArea() {
+  if (!punchManagementSelectedStaff) {
+    showPunchManagementDetailMessage(
+      "スタッフが選択されていません。",
+      "warning"
+    );
+    return;
+  }
+
+  const allowedPunchTypes = Array.isArray(
+    punchManagementSelectedStaff.allowedPunchTypes
+  )
+    ? punchManagementSelectedStaff.allowedPunchTypes
+    : [];
+
+  if (!allowedPunchTypes.length) {
+    showPunchManagementDetailMessage(
+      "現在追加できる打刻はありません。",
+      "warning"
+    );
+    return;
+  }
+
+  populateManualPunchTypeOptions(allowedPunchTypes);
+  setManualPunchDefaultDateTime();
+
+  const targetText = document.getElementById("manualPunchTargetStaffText");
+  const memoInput = document.getElementById("manualPunchMemo");
+  const reasonSelect = document.getElementById("manualPunchReason");
+
+  if (targetText) {
+    targetText.textContent =
+      "対象スタッフ：" +
+      (punchManagementSelectedStaff.staffName || "") +
+      " / ID：" +
+      (punchManagementSelectedStaff.staffCode || "");
+  }
+
+  if (memoInput) {
+    memoInput.value = "";
+  }
+
+  if (reasonSelect) {
+    reasonSelect.value = "";
+  }
+
+  showPunchManagementArea("manualPunchAddArea");
+  showManualPunchFormMessage("追加内容を入力してください。", "");
+}
+
+
+function showManualPunchAddArea() {
+  if (!punchManagementSelectedStaff) {
+    showPunchManagementStaffArea();
+    return;
+  }
+
+  showPunchManagementArea("manualPunchAddArea");
+}
+
+
+function showPunchManagementArea(areaId) {
+  const areaIds = [
+    "punchManagementLoginArea",
+    "punchManagementStaffArea",
+    "punchManagementDetailArea",
+    "manualPunchAddArea",
+    "manualPunchConfirmArea"
+  ];
+
+  areaIds.forEach(function (id) {
+    const area = document.getElementById(id);
+
+    if (!area) return;
+
+    if (id === areaId) {
+      area.classList.remove("hidden");
+    } else {
+      area.classList.add("hidden");
+    }
+  });
+}
+
+
+function populateManualPunchTypeOptions(allowedPunchTypes) {
+  const select = document.getElementById("manualPunchType");
+
+  if (!select) return;
+
+  const options = [
+    '<option value="">選択してください</option>'
+  ];
+
+  allowedPunchTypes.forEach(function (punchType) {
+    options.push(
+      '<option value="' +
+      escapePunchManagementHtml(punchType) +
+      '">' +
+      escapePunchManagementHtml(punchType) +
+      '</option>'
+    );
+  });
+
+  select.innerHTML = options.join("");
+
+  if (allowedPunchTypes.length === 1) {
+    select.value = allowedPunchTypes[0];
+    applyManualPunchReasonSuggestion();
+  }
+}
+
+
+function setManualPunchDefaultDateTime() {
+  const dateInput = document.getElementById("manualPunchDate");
+  const timeInput = document.getElementById("manualPunchTime");
+  const now = new Date();
+
+  if (dateInput) {
+    dateInput.value = formatLocalDateForInput(now);
+  }
+
+  if (timeInput) {
+    timeInput.value = formatLocalTimeForInput(now);
+  }
+}
+
+
+function formatLocalDateForInput(dateObj) {
+  const year = dateObj.getFullYear();
+  const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+  const day = String(dateObj.getDate()).padStart(2, "0");
+
+  return year + "-" + month + "-" + day;
+}
+
+
+function formatLocalTimeForInput(dateObj) {
+  const hour = String(dateObj.getHours()).padStart(2, "0");
+  const minute = String(dateObj.getMinutes()).padStart(2, "0");
+
+  return hour + ":" + minute;
+}
+
+
+function applyManualPunchReasonSuggestion() {
+  const punchTypeSelect = document.getElementById("manualPunchType");
+  const reasonSelect = document.getElementById("manualPunchReason");
+
+  if (!punchTypeSelect || !reasonSelect) return;
+
+  const reasonMap = {
+    "出勤": "出勤打刻忘れ",
+    "退勤": "退勤打刻忘れ",
+    "外出": "外出打刻忘れ",
+    "戻り": "戻り打刻忘れ"
+  };
+
+  if (reasonMap[punchTypeSelect.value]) {
+    reasonSelect.value = reasonMap[punchTypeSelect.value];
+  }
+}
+
+
+function getManualPunchFormData() {
+  const punchTypeSelect = document.getElementById("manualPunchType");
+  const dateInput = document.getElementById("manualPunchDate");
+  const timeInput = document.getElementById("manualPunchTime");
+  const reasonSelect = document.getElementById("manualPunchReason");
+  const memoInput = document.getElementById("manualPunchMemo");
+
+  return {
+    punchType: punchTypeSelect ? punchTypeSelect.value.trim() : "",
+    manualDate: dateInput ? dateInput.value.trim() : "",
+    manualTime: timeInput ? timeInput.value.trim() : "",
+    reason: reasonSelect ? reasonSelect.value.trim() : "",
+    memo: memoInput ? memoInput.value.trim() : ""
+  };
+}
+
+
+function validateManualPunchForm(formData) {
+  if (!punchManagementSelectedStaff) {
+    return "スタッフが選択されていません。";
+  }
+
+  if (!formData.punchType) {
+    return "追加する打刻を選択してください。";
+  }
+
+  const allowedPunchTypes = Array.isArray(
+    punchManagementSelectedStaff.allowedPunchTypes
+  )
+    ? punchManagementSelectedStaff.allowedPunchTypes
+    : [];
+
+  if (!allowedPunchTypes.includes(formData.punchType)) {
+    return "現在の状態では選択した打刻を追加できません。";
+  }
+
+  if (!formData.manualDate) {
+    return "打刻日を入力してください。";
+  }
+
+  if (!formData.manualTime) {
+    return "打刻時刻を入力してください。";
+  }
+
+  if (!formData.reason) {
+    return "追加理由を選択してください。";
+  }
+
+  if (formData.reason === "その他" && !formData.memo) {
+    return "理由が「その他」の場合は補足メモを入力してください。";
+  }
+
+  return "";
+}
+
+
+function showManualPunchConfirmArea() {
+  const formData = getManualPunchFormData();
+  const errorMessage = validateManualPunchForm(formData);
+
+  if (errorMessage) {
+    showManualPunchFormMessage(errorMessage, "warning");
+    return;
+  }
+
+  const staffEl = document.getElementById("manualPunchConfirmStaff");
+  const typeEl = document.getElementById("manualPunchConfirmType");
+  const dateTimeEl = document.getElementById("manualPunchConfirmDateTime");
+  const reasonEl = document.getElementById("manualPunchConfirmReason");
+  const memoEl = document.getElementById("manualPunchConfirmMemo");
+
+  if (staffEl) {
+    staffEl.textContent =
+      (punchManagementSelectedStaff.staffName || "") +
+      " / ID：" +
+      (punchManagementSelectedStaff.staffCode || "");
+  }
+
+  if (typeEl) typeEl.textContent = formData.punchType;
+
+  if (dateTimeEl) {
+    dateTimeEl.textContent =
+      formData.manualDate.replace(/-/g, "/") +
+      " " +
+      formData.manualTime;
+  }
+
+  if (reasonEl) reasonEl.textContent = formData.reason;
+  if (memoEl) memoEl.textContent = formData.memo || "なし";
+
+  showPunchManagementArea("manualPunchConfirmArea");
+
+  showManualPunchConfirmMessage(
+    "保存後は打刻Dataと修正履歴に記録されます。",
+    "warning"
+  );
+}
+
+
+async function executeManualPunchAdd() {
+  const executeButton = document.getElementById("btnExecuteManualPunchAdd");
+  const formData = getManualPunchFormData();
+  const errorMessage = validateManualPunchForm(formData);
+
+  if (errorMessage) {
+    showManualPunchConfirmMessage(errorMessage, "error");
+    return;
+  }
+
+  if (!isGasUrlSet()) return;
+
+  if (executeButton) {
+    executeButton.disabled = true;
+    executeButton.textContent = "追加中...";
+  }
+
+  showManualPunchConfirmMessage("管理者打刻を追加中...", "");
+
+  try {
+    const response = await fetch(GAS_API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "addManualPunch",
+        loginAdminId: punchManagementAdminId,
+        loginAdminPw: punchManagementAdminPw,
+        staffCode: punchManagementSelectedStaff.staffCode || "",
+        punchType: formData.punchType,
+        manualDate: formData.manualDate,
+        manualTime: formData.manualTime,
+        reason: formData.reason,
+        memo: formData.memo
+      })
+    });
+
+    const data = await response.json();
+
+    if (!data.success) {
+      showManualPunchConfirmMessage(
+        data.message || "管理者打刻の追加に失敗しました。",
+        "error"
+      );
+      return;
+    }
+
+    showManualPunchConfirmMessage(
+      data.message || "管理者打刻を追加しました。",
+      "success"
+    );
+
+    await refreshPunchManagementStaffList(
+      punchManagementSelectedStaff.staffCode || ""
+    );
+
+  } catch (error) {
+    console.error("管理者打刻追加エラー:", error);
+
+    sendErrorLog(
+      "管理者打刻追加エラー",
+      "管理者打刻の追加処理でエラーが発生しました",
+      "executeManualPunchAdd",
+      error && error.message ? error.message : String(error)
+    );
+
+    showManualPunchConfirmMessage(
+      "管理者打刻の追加中にエラーが発生しました。",
+      "error"
+    );
+
+  } finally {
+    if (executeButton) {
+      executeButton.disabled = false;
+      executeButton.textContent = "追加実行";
+    }
+  }
+}
+
+
+async function refreshPunchManagementStaffList(selectedStaffCode) {
+  const response = await fetch(GAS_API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "getForgotPunchList",
+      loginAdminId: punchManagementAdminId,
+      loginAdminPw: punchManagementAdminPw
+    })
+  });
+
+  const data = await response.json();
+
+  if (!data.success) {
+    throw new Error(
+      data.message || "スタッフ一覧の再取得に失敗しました。"
+    );
+  }
+
+  punchManagementStaffList = Array.isArray(data.staffList)
+    ? data.staffList
+    : [];
+
+  punchManagementSelectedStaff =
+    punchManagementStaffList.find(function (item) {
+      return String(item.staffCode || "") === String(selectedStaffCode || "");
+    }) || null;
+
+  renderPunchManagementStaffList(punchManagementStaffList);
+
+  if (punchManagementSelectedStaff) {
+    openPunchManagementDetail(
+      punchManagementSelectedStaff.staffCode || ""
+    );
+
+    showPunchManagementDetailMessage(
+      "打刻追加が完了し、最新状態へ更新しました。",
+      "success"
+    );
+  } else {
+    showPunchManagementStaffArea();
+
+    showPunchManagementListMessage(
+      "打刻追加が完了しました。",
+      "success"
+    );
+  }
+}
+
+
+function showManualPunchFormMessage(message, type) {
+  const el = document.getElementById("manualPunchFormMessage");
+
+  if (!el) return;
+
+  setPunchManagementMessage(el, message, type);
+}
+
+
+function showManualPunchConfirmMessage(message, type) {
+  const el = document.getElementById("manualPunchConfirmMessage");
+
+  if (!el) return;
+
+  setPunchManagementMessage(el, message, type);
+}
+
+
+function showPunchManagementDetailMessage(message, type) {
+  const el = document.getElementById("punchManagementDetailMessage");
+  if (!el) return;
+  setPunchManagementMessage(el, message, type);
+}
+
+
+function showPunchManagementLoginMessage(message, type) {
+  const el = document.getElementById("punchManagementLoginMessage");
+  if (!el) return;
+  setPunchManagementMessage(el, message, type);
+}
+
+
+function showPunchManagementListMessage(message, type) {
+  const el = document.getElementById("punchManagementListMessage");
+  if (!el) return;
+  setPunchManagementMessage(el, message, type);
+}
+
+
+function setPunchManagementMessage(element, message, type) {
+  element.textContent = message || "";
+
+  element.classList.remove("error");
+  element.classList.remove("success");
+  element.classList.remove("warning");
+
+  if (type === "error") element.classList.add("error");
+  if (type === "success") element.classList.add("success");
+  if (type === "warning") element.classList.add("warning");
+}
+
+
+function escapePunchManagementHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 
